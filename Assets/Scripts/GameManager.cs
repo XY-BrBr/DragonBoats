@@ -10,7 +10,7 @@ using Photon.Pun;
 public enum PlayerType
 {
     [Description("扒手")]
-    Shiper,
+    Boatman,
 
     [Description("舵手")]
     Helmsman,
@@ -31,20 +31,6 @@ public static class Enum_Ex
 
 public class GameManager : Singleton<GameManager>, IPunObservable
 {
-    public GameObject Ship;
-    public GameObject ShipBody;
-    public GameObject Foam;
-    public PhotonView photonView;
-
-    public Canvas TestParent;
-    public Button SwitchPlayerType_Btn;
-    public Text PlayerType_Text;
-
-    public float ShipAcceleration;
-    public PlayerType playerType;
-
-    float ReTime = 7f;
-
     #region 龙船数据
     public float addSpeed = 2f; //加速度
     public float resistanceSpeed = 1f; //模拟阻碍力
@@ -67,22 +53,51 @@ public class GameManager : Singleton<GameManager>, IPunObservable
     [SerializeField] float currentShakeSpeed = 0;
     #endregion
 
+    public GameObject Ship;
+    public GameObject ShipBody;
+    public GameObject Foam;
+    public PhotonView photonView;
+
+    [Header("移动控制组件")]
+    [SerializeField]
+    [Tooltip("扒手控制组件")]
+    BoatManController boatmanController;
+    [Tooltip("扒手控制组件")]
+    HelmsmanController helmsmanController;
+    [Tooltip("扒手控制组件")]
+    DrummerController drummerController;
+
+    public Canvas TestParent;
+    public Button SwitchPlayerType_Btn;
+    public Text PlayerType_Text;
+
+    public float ShipAcceleration;
+    public PlayerType playerType;
+
+    float ReTime = 7f; 
 
     // Start is called before the first frame update
     void Start()
     {
         ReTime = 5f;
 
-        playerType = PlayerType.Shiper;
+        playerType = PlayerType.Boatman;
+
+        boatmanController = Ship.GetComponent<BoatManController>();
+        helmsmanController = Ship.GetComponent<HelmsmanController>();
+        drummerController = Ship.GetComponent<DrummerController>();
+
+        InitRole();
 
         SwitchPlayerType_Btn.onClick.AddListener(() =>
         {
             if (playerType == PlayerType.Dummer)
-                playerType = PlayerType.Shiper;
+                playerType = PlayerType.Boatman;
             else
                 playerType = playerType + 1;
 
             PlayerType_Text.text = $"当前为 {playerType.GetDscription()} 模式";
+            InitRole();
         });
     }
 
@@ -121,6 +136,30 @@ public class GameManager : Singleton<GameManager>, IPunObservable
         //if (isShaking) { currentSpeed}
     }
 
+    /// <summary>
+    /// 初始化角色
+    /// </summary>
+    public void InitRole()
+    {
+        boatmanController.enabled = false;
+        helmsmanController.enabled = false;
+        drummerController.enabled = false;
+
+        switch (playerType)
+        {
+            case PlayerType.Boatman:
+                boatmanController.enabled = true;
+                break;
+            case PlayerType.Helmsman:
+                helmsmanController.enabled = true;
+                break;
+            case PlayerType.Dummer:
+                drummerController.enabled = true;
+                break;
+            default:
+                break;
+        }
+    }
 
     ///旋转逻辑：
     ///如果在档，挡的方向与转的方向  一致  ==》 加速旋转且急速减速 ，船身会向转弯方向急速倾斜 (漂移效果)

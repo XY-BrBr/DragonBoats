@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class DrummerController : BoatController
+public class DrummerController : MonoBehaviour
 {
+    DragonBoatMovement movement;
+
     // Start is called before the first frame update
     void Start()
     {

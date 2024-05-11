@@ -4,8 +4,10 @@ using UnityEngine;
 using Photon.Pun;
 using UnityEngine.UI;
 
-public class BoatManController : BoatController
+public class BoatManController : MonoBehaviour
 {
+    private DragonBoatMovement movement;
+
     //移动端按钮
     public Canvas ShiperParent;
     public Button ShiperTowards_Btn;
@@ -23,9 +25,4 @@ public class BoatManController : BoatController
         
     }
 
-    public override void DoAction()
-    {
-        base.DoAction();
-        Debug.Log("扒手方法！");
-    }
 }

@@ -85,7 +85,7 @@ public class UIManager : Singleton<UIManager>
     {
         switch (GameManager.Instance.playerType)
         {
-            case PlayerType.Shiper:
+            case PlayerType.Boatman:
                 ShiperParent.gameObject.SetActive(true);
                 HelmsmanParent.gameObject.SetActive(false);
                 DummerParent.gameObject.SetActive(false);

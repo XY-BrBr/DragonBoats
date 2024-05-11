@@ -16,7 +16,7 @@ enum Buff
     Invincible = 8,
 }
 
-public class ShiperMovement : MonoBehaviour, IPunObservable
+public class DragonBoatMovement : MonoBehaviour, IPunObservable
 {
     //×é¼þ
     Rigidbody rigid;

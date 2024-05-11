@@ -8,7 +8,7 @@ using Photon.Pun;
 public class ShiperController : MonoBehaviour, IPunObservable
 {
     //组件信息
-    ShiperMovement shiperMovement;
+    DragonBoatMovement shiperMovement;
 
     //移动端按钮
     public Canvas ShiperParent;
@@ -33,7 +33,7 @@ public class ShiperController : MonoBehaviour, IPunObservable
 
     private void Start()
     {
-        shiperMovement = GetComponent<ShiperMovement>();
+        shiperMovement = GetComponent<DragonBoatMovement>();
 
         ShiperTowards_Btn.onClick.AddListener(() => {
             //UIManager.Instance.PowerBarUp();

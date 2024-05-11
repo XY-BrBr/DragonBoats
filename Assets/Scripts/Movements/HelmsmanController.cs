@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class HelmsmanController : BoatController
+public class HelmsmanController : MonoBehaviour
 {
+    DragonBoatMovement movement;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -15,10 +17,5 @@ public class HelmsmanController : BoatController
     void Update()
     {
         
-    }
-
-    public override void DoAction()
-    {
-        base.DoAction();
     }
 }
