@@ -112,10 +112,12 @@ public class UIManager : Singleton<UIManager>
         //PhotonNetwork.LeaveRoom();
     }
 
+    #region 鼓手UI显示逻辑
+
     /// <summary>
     /// 鼓点列表指示刷新显示
     /// </summary>
-    /// <param name="isMiddle"></param>
+    /// <param name="isMiddle">是否敲击鼓中间</param>
     public void ShowBuffList(bool isMiddle)
     {
         //TODO: 把动画触发优化一下
@@ -125,34 +127,30 @@ public class UIManager : Singleton<UIManager>
         GetBuffList.transform.GetChild(GameManager.Instance.nowBuffPoint).gameObject.SetActive(true);
         GameManager.Instance.buffList[GameManager.Instance.nowBuffPoint] = isMiddle ? 1 : 2;
         GameManager.Instance.nowBuffPoint += 1;
-        if(GameManager.Instance.canBuff && isMiddle)
-        {
-            GameManager.Instance.canBuff = false;
-        }
-
-        StartCoroutine(GetBuffLastTime());
     }
 
+    /// <summary>
+    /// Buff效果UI显示
+    /// </summary>
     public void ShowBuff()
     {
         for (int i = 0; i < GameManager.Instance.buffList.Length; i++)
         {
             GetBuffList.transform.GetChild(i).gameObject.SetActive(false);
         }
+
+        Buff_Text.text = GameManager.Instance.CheckBuff(GameManager.Instance.buffList, GameManager.Instance.nowBuffPoint);
         Buff_Text.gameObject.SetActive(true);
     }
 
-    IEnumerator GetBuffLastTime()
+    /// <summary>
+    /// Buff效果UI隐藏
+    /// </summary>
+    public void HideBuff()
     {
-        yield return new WaitForSeconds(2);
-        GameManager.Instance.getBuff = true;
-        Buff_Text.text = GameManager.Instance.CheckBuff(GameManager.Instance.buffList, GameManager.Instance.nowBuffPoint);
-        ShowBuff();
-        yield return new WaitForSeconds(2);
-        GameManager.Instance.buffList = new int[15];
-        GameManager.Instance.nowBuffPoint = 0;
-        GameManager.Instance.getBuff = false;
+        Buff_Text.text = "";
         Buff_Text.gameObject.SetActive(false);
-        yield break;
     }
+
+    #endregion
 }

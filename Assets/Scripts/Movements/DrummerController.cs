@@ -8,7 +8,6 @@ public class DrummerController : MonoBehaviour
 {
     DragonBoatMovement movement;
 
-    public Canvas DummerParent;
     public Button DummerCenter_Btn;
     public Button DummerEdge_Btn;
 
@@ -28,8 +27,31 @@ public class DrummerController : MonoBehaviour
         DummerEdge_Btn.interactable = !GameManager.Instance.getBuff;
     }
 
-    private void PressDurmEvent(bool Middle)
+    private void PressDurmEvent(bool isMiddle)
     {
-        UIManager.Instance.ShowBuffList(Middle);
+        if (GameManager.Instance.canBuff && isMiddle)
+        {
+            StartCoroutine(GetBuffLastTime());
+            GameManager.Instance.canBuff = false;
+        }
+
+        if(!GameManager.Instance.canBuff)
+        {
+            UIManager.Instance.ShowBuffList(isMiddle);
+        }
+    }
+
+    IEnumerator GetBuffLastTime()
+    {
+        yield return new WaitForSeconds(2);
+        GameManager.Instance.getBuff = true;
+        UIManager.Instance.ShowBuff();
+        yield return new WaitForSeconds(2);
+        GameManager.Instance.buffList = new int[15];
+        GameManager.Instance.nowBuffPoint = 0;
+        GameManager.Instance.getBuff = false;
+        GameManager.Instance.canBuff = true;
+        UIManager.Instance.HideBuff();
+        yield break;
     }
 }

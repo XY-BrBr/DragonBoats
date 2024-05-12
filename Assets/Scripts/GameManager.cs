@@ -67,20 +67,20 @@ public class GameManager : Singleton<GameManager>, IPunObservable
     [Tooltip("扒手控制组件")]
     DrummerController drummerController;
 
-    public Canvas TestParent;
-    public Button SwitchPlayerType_Btn;
-    public Text PlayerType_Text;
-
     [Header("鼓手移动控制相关")]
     public bool canBuff = true;
     public bool getBuff = false;
     public int nowBuffPoint;
     public int[] buffList;
 
+    [Header("测试用面板")]
+    public Button SwitchPlayerType_Btn;
+    public Text PlayerType_Text;
+
     public float ShipAcceleration;
     public PlayerType playerType;
 
-    float ReTime = 7f; 
+    float ReTime = 7f; //失败界面显示倒计时
 
     // Start is called before the first frame update
     void Start()
@@ -270,9 +270,15 @@ public class GameManager : Singleton<GameManager>, IPunObservable
         return resVector;
     }
 
+    /// <summary>
+    /// 获取Buff效果
+    /// </summary>
+    /// <param name="buffList">鼓点数组</param>
+    /// <param name="nowBuffPoint">数组指针</param>
+    /// <returns></returns>
     public string CheckBuff(int[] buffList, int nowBuffPoint)
     {
-        string buffName = "";
+        string buffName;
         if (buffList[1] == 1 && buffList[2] == 1 && buffList[3] == 1 && nowBuffPoint == 4)
             buffName = "获得加速效果";
         else if (buffList[1] == 2 && buffList[2] == 2 && nowBuffPoint == 3 && nowBuffPoint == 3)

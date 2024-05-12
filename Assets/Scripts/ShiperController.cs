@@ -10,11 +10,6 @@ public class ShiperController : MonoBehaviour, IPunObservable
     //组件信息
     DragonBoatMovement shiperMovement;
 
-    //移动端按钮
-    public Canvas ShiperParent;
-    public Button ShiperTowards_Btn;
-    public Button ShiperOrder_Btn;
-
     public Button TurnRight_Btn;
     public Button TurnLeft_Btn;
     public Button RightSlowDown_Btn;
@@ -35,15 +30,15 @@ public class ShiperController : MonoBehaviour, IPunObservable
     {
         shiperMovement = GetComponent<DragonBoatMovement>();
 
-        ShiperTowards_Btn.onClick.AddListener(() => {
-            //UIManager.Instance.PowerBarUp();
-            if (PhotonNetwork.IsConnected)
-            {
-                ChangeSpeed();
-            }
+        //ShiperTowards_Btn.onClick.AddListener(() => {
+        //    //UIManager.Instance.PowerBarUp();
+        //    if (PhotonNetwork.IsConnected)
+        //    {
+        //        ChangeSpeed();
+        //    }
 
-            Debug.Log("点击事件");
-        });
+        //    Debug.Log("点击事件");
+        //});
     }
 
     private void Update()

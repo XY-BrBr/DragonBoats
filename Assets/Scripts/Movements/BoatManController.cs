@@ -8,8 +8,6 @@ public class BoatManController : MonoBehaviour
 {
     private DragonBoatMovement movement;
 
-    //ÒÆ¶¯¶Ë°´Å¥
-    public Canvas ShiperParent;
     public Button ShiperTowards_Btn;
     public Button ShiperOrder_Btn;
 
