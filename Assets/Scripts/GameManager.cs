@@ -71,6 +71,12 @@ public class GameManager : Singleton<GameManager>, IPunObservable
     public Button SwitchPlayerType_Btn;
     public Text PlayerType_Text;
 
+    [Header("鼓手移动控制相关")]
+    public bool canBuff = true;
+    public bool getBuff = false;
+    public int nowBuffPoint;
+    public int[] buffList;
+
     public float ShipAcceleration;
     public PlayerType playerType;
 
@@ -79,6 +85,9 @@ public class GameManager : Singleton<GameManager>, IPunObservable
     // Start is called before the first frame update
     void Start()
     {
+        nowBuffPoint = 0;
+        buffList = new int[15];
+
         ReTime = 5f;
 
         playerType = PlayerType.Boatman;
@@ -259,6 +268,21 @@ public class GameManager : Singleton<GameManager>, IPunObservable
             resVector.z = eulerAngle.z - 360f;
 
         return resVector;
+    }
+
+    public string CheckBuff(int[] buffList, int nowBuffPoint)
+    {
+        string buffName = "";
+        if (buffList[1] == 1 && buffList[2] == 1 && buffList[3] == 1 && nowBuffPoint == 4)
+            buffName = "获得加速效果";
+        else if (buffList[1] == 2 && buffList[2] == 2 && nowBuffPoint == 3 && nowBuffPoint == 3)
+            buffName = "获得转弯加速效果";
+        else if (buffList[1] == 2 && buffList[2] == 1 && nowBuffPoint == 3 && nowBuffPoint == 3)
+            buffName = "获得无敌效果";
+        else
+            buffName = "无效";
+
+        return buffName;
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)

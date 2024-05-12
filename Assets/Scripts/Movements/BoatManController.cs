@@ -16,7 +16,12 @@ public class BoatManController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        movement = GetComponent<DragonBoatMovement>();
+
+        ShiperTowards_Btn.onClick.AddListener(() => 
+        {
+            MoveTowards();
+        });
     }
 
     // Update is called once per frame
@@ -25,4 +30,8 @@ public class BoatManController : MonoBehaviour
         
     }
 
+    private void MoveTowards()
+    {
+        movement.GetAcceleration();
+    }
 }

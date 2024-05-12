@@ -13,6 +13,8 @@ public class UIManager : Singleton<UIManager>
     public Image PowerBarSteady;
     public Image PowerBarReady;
     public Transform PowerPoint;
+
+    [Header(" 不同角色的视角")]
     public GameObject shiperView;
     public GameObject helmanView;
     public GameObject drummerView;
@@ -20,8 +22,7 @@ public class UIManager : Singleton<UIManager>
     public Canvas HelmsmanParent;
 
     public Canvas DummerParent;
-    public Button DummerCenter_Btn;
-    public Button DummerEdge_Btn;
+
     public Text Buff_Text;
     public Canvas GetBuffList;
 
@@ -32,53 +33,14 @@ public class UIManager : Singleton<UIManager>
     public float PowerBarLowSpeed;
     public float PowerBarToPoint;
 
-    public bool canBuff = true;
-    public int nowBuffPoint;
-    public int[] buffList;
-
     public Animator animator;
 
     private void Start()
     {
-        nowBuffPoint = 0;
-        buffList = new int[15];
         PowerBarUpSpeed = GameManager.Instance.addSpeed / GameManager.Instance.maxSpeed;
         PowerBarLowSpeed = GameManager.Instance.slowSpeed / GameManager.Instance.maxSpeed;
 
         Buff_Text.gameObject.SetActive(false);
-
-        DummerCenter_Btn.onClick.AddListener(() => {
-            animator.SetTrigger("DoRight");
-            if (canBuff)
-            {
-                canBuff = false;
-                GetBuffList.transform.GetChild(0).GetComponent<Image>().color = Color.red;
-                GetBuffList.transform.GetChild(0).gameObject.SetActive(true);
-                buffList[0] = 1;
-                nowBuffPoint += 1;
-                StartCoroutine(GetBuffLastTime());
-            }
-            else
-            {
-                GetBuffList.transform.GetChild(nowBuffPoint).GetComponent<Image>().color = Color.red;
-                GetBuffList.transform.GetChild(nowBuffPoint).gameObject.SetActive(true);
-                buffList[nowBuffPoint] = 1;
-                nowBuffPoint += 1;
-            }
-        });
-
-        DummerEdge_Btn.onClick.AddListener(() =>
-        {
-            animator.SetTrigger("DoLeft");
-            if (!canBuff && buffList[nowBuffPoint] == 0)
-            {
-                Debug.Log("Yellow");
-                GetBuffList.transform.GetChild(nowBuffPoint).GetComponent<Image>().color = Color.yellow;
-                GetBuffList.transform.GetChild(nowBuffPoint).gameObject.SetActive(true);
-                buffList[nowBuffPoint] = 2;
-                nowBuffPoint += 1;
-            }
-        });
     }
 
     private void Update()
@@ -144,50 +106,53 @@ public class UIManager : Singleton<UIManager>
         //}
     }
 
-    public void PowerBarLow()
-    {
-
-    }
-
     public void Lose()
     {
         LoseParent.gameObject.SetActive(true);
         //PhotonNetwork.LeaveRoom();
     }
 
-    IEnumerator GetBuffLastTime()
+    /// <summary>
+    /// 鼓点列表指示刷新显示
+    /// </summary>
+    /// <param name="isMiddle"></param>
+    public void ShowBuffList(bool isMiddle)
     {
-        yield return new WaitForSeconds(2);
-        DummerCenter_Btn.interactable = false;
-        DummerEdge_Btn.interactable = false;
-        CheckBuff();
-        buffList = new int[15];
-        nowBuffPoint = 0;
-        yield return new WaitForSeconds(2);
-        DummerCenter_Btn.interactable = true;
-        DummerEdge_Btn.interactable = true;
-        Buff_Text.gameObject.SetActive(false);
-        yield break;
+        //TODO: 把动画触发优化一下
+        animator.SetTrigger("DoAnim");
+
+        GetBuffList.transform.GetChild(GameManager.Instance.nowBuffPoint).GetComponent<Image>().color = isMiddle ? Color.red : Color.yellow;
+        GetBuffList.transform.GetChild(GameManager.Instance.nowBuffPoint).gameObject.SetActive(true);
+        GameManager.Instance.buffList[GameManager.Instance.nowBuffPoint] = isMiddle ? 1 : 2;
+        GameManager.Instance.nowBuffPoint += 1;
+        if(GameManager.Instance.canBuff && isMiddle)
+        {
+            GameManager.Instance.canBuff = false;
+        }
+
+        StartCoroutine(GetBuffLastTime());
     }
 
-    public void CheckBuff()
+    public void ShowBuff()
     {
-        for(int i = 0; i < buffList.Length; i++)
+        for (int i = 0; i < GameManager.Instance.buffList.Length; i++)
         {
             GetBuffList.transform.GetChild(i).gameObject.SetActive(false);
         }
         Buff_Text.gameObject.SetActive(true);
-
-        if (buffList[1] == 1 && buffList[2] == 1 && buffList[3] == 1 && nowBuffPoint == 4)
-            Buff_Text.text = "获得加速效果";
-        else if (buffList[1] == 2 && buffList[2] == 2 && nowBuffPoint == 3 && nowBuffPoint == 3)
-            Buff_Text.text = "获得转弯加速效果";
-        else if (buffList[1] == 2 && buffList[2] == 1 && nowBuffPoint == 3 && nowBuffPoint == 3)
-            Buff_Text.text = "获得无敌效果";
-        else
-            Buff_Text.text = "无效";
-
-        canBuff = true;
     }
 
+    IEnumerator GetBuffLastTime()
+    {
+        yield return new WaitForSeconds(2);
+        GameManager.Instance.getBuff = true;
+        Buff_Text.text = GameManager.Instance.CheckBuff(GameManager.Instance.buffList, GameManager.Instance.nowBuffPoint);
+        ShowBuff();
+        yield return new WaitForSeconds(2);
+        GameManager.Instance.buffList = new int[15];
+        GameManager.Instance.nowBuffPoint = 0;
+        GameManager.Instance.getBuff = false;
+        Buff_Text.gameObject.SetActive(false);
+        yield break;
+    }
 }
