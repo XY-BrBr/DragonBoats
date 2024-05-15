@@ -20,14 +20,14 @@ public class ShakeLeftBtn : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        GameManager.Instance.isShakeRight = false;
-        GameManager.Instance.isShaking = true;
+        //GameManager.Instance.isShakeRight = false;
+        //GameManager.Instance.isShaking = true;
         animators.AnimaSetBool("DoAnim", true);
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        GameManager.Instance.isShaking = false;
+        //GameManager.Instance.isShaking = false;
         animators.AnimaSetBool("DoAnim", false);
     }
 

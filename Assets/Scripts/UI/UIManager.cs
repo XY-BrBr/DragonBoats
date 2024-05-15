@@ -14,11 +14,6 @@ public class UIManager : Singleton<UIManager>
     public Image PowerBarReady;
     public Transform PowerPoint;
 
-    [Header("不同角色的视角")]
-    public GameObject shiperView;
-    public GameObject helmanView;
-    public GameObject drummerView;
-
     public Canvas HelmsmanParent;
 
     public Canvas DummerParent;
@@ -37,65 +32,17 @@ public class UIManager : Singleton<UIManager>
 
     private void Update()
     {
-        switch (GameManager.Instance.playerType)
-        {
-            case PlayerType.Boatman:
-                ShiperParent.gameObject.SetActive(true);
-                HelmsmanParent.gameObject.SetActive(false);
-                DummerParent.gameObject.SetActive(false);
-
-                PowerBarReady.fillAmount = GameManager.Instance.boatMovement.CurrentSpeed / GameManager.Instance.boatMovement.MaxSpeed;
-
-                shiperView.SetActive(true);
-                helmanView.SetActive(false);
-                drummerView.SetActive(false);
-
-                //if (PowerPoint.rotation.z <= 0 || PowerPoint.rotation.z <= -180)
-                //{
-                //    if (PowerBarToPoint < 0)
-                //        PowerPoint.Rotate(0, 0, -PowerBarLowSpeed * PowerBarToPoint * Time.deltaTime);
-                //}
-                break;
-            case PlayerType.Helmsman:
-                ShiperParent.gameObject.SetActive(false);
-                HelmsmanParent.gameObject.SetActive(true);
-                DummerParent.gameObject.SetActive(false);
-
-                shiperView.SetActive(false);
-                helmanView.SetActive(true);
-                drummerView.SetActive(false);
-
-                PowerBarReady.fillAmount = GameManager.Instance.currentSpeed / GameManager.Instance.maxSpeed;
-                break;
-            case PlayerType.Dummer:
-                ShiperParent.gameObject.SetActive(false);
-                HelmsmanParent.gameObject.SetActive(false);
-                DummerParent.gameObject.SetActive(true);
-
-                helmanView.SetActive(false);
-                shiperView.SetActive(false);
-                drummerView.SetActive(true);
-
-                break;
-        }
-
+        PowerBarReady.fillAmount = GameManager.Instance.boatMovement.CurrentSpeed / GameManager.Instance.boatMovement.MaxSpeed;
     }
 
-    public void PowerBarUp()
+    /// <summary>
+    /// 初始化控制窗口面板
+    /// </summary>
+    public void InitControllerPanel()
     {
-        PowerBarReady.fillAmount = GameManager.Instance.currentSpeed / GameManager.Instance.maxSpeed;
-        //float powerRotate = (PowerPoint.localRotation.z + 180f) % 360f - 180f;
-
-        ////TODO: 过界判定
-        //if (powerRotate <= 0)
-        //{
-        //    if(PowerBarToPoint < 0)
-        //        if(powerRotate - PowerBarUpSpeed * PowerBarToPoint <= -180)
-        //            //TODO : 这里可能有问题
-        //            PowerPoint.Rotate(0, 0, -180 - powerRotate);
-        //        else
-        //            PowerPoint.Rotate(0, 0, PowerBarUpSpeed * PowerBarToPoint);
-        //}
+        ShiperParent.gameObject.SetActive(GameManager.Instance.playerType == PlayerType.Boatman);
+        HelmsmanParent.gameObject.SetActive(GameManager.Instance.playerType == PlayerType.Helmsman);
+        DummerParent.gameObject.SetActive(GameManager.Instance.playerType == PlayerType.Dummer);
     }
 
     public void Lose()

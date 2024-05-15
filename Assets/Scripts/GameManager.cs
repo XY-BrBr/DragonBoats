@@ -31,33 +31,13 @@ public static class Enum_Ex
 
 public class GameManager : Singleton<GameManager>, IPunObservable
 {
-    #region 龙船数据
-    public float addSpeed = 2f; //加速度
-    public float resistanceSpeed = 1f; //模拟阻碍力
-    public float slowSpeed = 1f;
-    public float maxSpeed = 40f;
-    public float currentSpeed = 0f;
-
-    public float rotateSpeed = 0.2f;//正常旋转速度
-    public float rotateAdd = 0.1f;//加速旋转
-
-    public bool isShaking = false;
-    public bool isShakeRight = false;
-    public bool isSameDir = false;
-    public float returnShakeSpeed = 0.2f;
-    public float shakeSpeed = 0.1f;
-    public float shakeAdd = 0.5f;
-
-    [SerializeField] float currentRotateSpeed = 0;
-    [SerializeField] float currentShakeSpeed = 0;
-    #endregion
     public DragonBoatData_SO boatData;
     public DragonBoatMovement boatMovement;
 
+    public float resistanceSpeed = 0.1f;
+
     public GameObject Ship;
-    public GameObject ShipBody;
-    public GameObject Foam;
-    public PhotonView photonView;
+    public Camera cam;
 
     [Header("移动控制组件")]
     [SerializeField]
@@ -78,7 +58,6 @@ public class GameManager : Singleton<GameManager>, IPunObservable
     public Button SwitchPlayerType_Btn;
     public Text PlayerType_Text;
 
-    public float ShipAcceleration;
     public PlayerType playerType;
 
     #region Unity Base Method
@@ -94,6 +73,8 @@ public class GameManager : Singleton<GameManager>, IPunObservable
         boatmanController = Ship.GetComponent<BoatManController>();
         helmsmanController = Ship.GetComponent<HelmsmanController>();
         drummerController = Ship.GetComponent<DrummerController>();
+
+        cam = Camera.main;
 
         InitRole();
 
@@ -150,6 +131,9 @@ public class GameManager : Singleton<GameManager>, IPunObservable
             default:
                 break;
         }
+
+        UIManager.Instance.InitControllerPanel();
+        cam.GetComponent<CameraController>().InitCamere();
     }
 
 

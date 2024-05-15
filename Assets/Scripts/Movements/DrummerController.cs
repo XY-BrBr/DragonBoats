@@ -8,6 +8,8 @@ public class DrummerController : MonoBehaviour
 {
     DragonBoatMovement movement;
 
+    public Animator anim;
+
     public Button DummerCenter_Btn;
     public Button DummerEdge_Btn;
 
@@ -29,6 +31,8 @@ public class DrummerController : MonoBehaviour
 
     private void PressDurmEvent(bool isMiddle)
     {
+        string str = isMiddle ? "DoRight" : "DoLeft";
+
         if (GameManager.Instance.canBuff && isMiddle)
         {
             StartCoroutine(GetBuffLastTime());
@@ -39,6 +43,8 @@ public class DrummerController : MonoBehaviour
         {
             UIManager.Instance.ShowBuffList(isMiddle);
         }
+
+        anim.SetTrigger(str);
     }
 
     IEnumerator GetBuffLastTime()

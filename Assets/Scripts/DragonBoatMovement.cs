@@ -33,7 +33,7 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
 
         currentBoatData = Instantiate(GameManager.Instance.InitDragonBoat());
 
-        GameManager.Instance.currentSpeed = 0f;
+        CurrentSpeed = 0f;
     }
 
     // Update is called once per frame
