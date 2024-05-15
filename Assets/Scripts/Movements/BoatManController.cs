@@ -32,7 +32,7 @@ public class BoatManController : MonoBehaviour
 
     private void MoveTowards()
     {
-        for (int i = 0; i < animators.Count; i++) animators[i].SetTrigger("DoAnim");
+        animators.AnimaSetTrigger("DoAnim");
 
         movement.GetAcceleration();
     }

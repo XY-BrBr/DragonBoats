@@ -3,26 +3,21 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using UnityEngine;
-
-enum Buff
-{
-    [Description("最大速度提升")]
-    MaxUp = 2,
-
-    [Description("转向速度提升")]
-    RotateFast = 4,
-
-    [Description("无敌时间")]
-    Invincible = 8,
-}
+using UnityEngine.SceneManagement;
 
 public class DragonBoatMovement : MonoBehaviour, IPunObservable
 {
     public DragonBoatData_SO currentBoatData;
 
     //组件
+    public GameObject Ship;
+    public GameObject ShipBody;
+    public GameObject Foam;
+
     Rigidbody rigid;
     PhotonView photonView;
+
+    float ReTime = 7f; //失败界面显示倒计时
 
     #region Unity Base Method
     private void Awake()
@@ -34,6 +29,8 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
     // Start is called before the first frame update
     void Start()
     {
+        ReTime = 5f;
+
         currentBoatData = Instantiate(GameManager.Instance.InitDragonBoat());
 
         GameManager.Instance.currentSpeed = 0f;
@@ -47,12 +44,36 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
             currentBoatData.currentSpeed -= GameManager.Instance.resistanceSpeed * Time.deltaTime;
         }
 
+        float angle = ShipBody.transform.EulerAngles2InspectorRotation_Ex().x;
+
+        if (angle > 39f || angle < -39f)
+        {
+            Time.timeScale = 0;
+            UIManager.Instance.Lose();
+            ReTime -= Time.fixedUnscaledDeltaTime;
+            if (ReTime < 0)
+            {
+                Debug.Log("返回菜单");
+                SceneManager.LoadSceneAsync("Menu");
+            }
+        }
+
         rigid.velocity = GameManager.Instance.Ship.transform.forward * currentBoatData.currentSpeed;
     }
 
     private void FixedUpdate()
     {
+        float angle = ShipBody.transform.EulerAngles2InspectorRotation_Ex().x;
 
+        if (!isRotating)
+        {
+            if (angle > 0.1f)
+                ShipBody.transform.Rotate((ShakeSpeed + ShakeAdd + ReturnShakeSpeed) * -1, 0, 0);
+            else if (angle < -0.1f)
+                ShipBody.transform.Rotate((ShakeSpeed + ShakeAdd + ReturnShakeSpeed) * 1, 0, 0);
+            else
+                return;
+        }
     }
     #endregion
 
@@ -100,12 +121,50 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
     }
     #endregion
 
+    #region Others Property
+    //TODO:后续根据需求更改获取的数据对象
+    public float AddSpeed
+    {
+        get { if (currentBoatData != null) return currentBoatData.addSpeed; else return 0; }
+        set { currentBoatData.addSpeed = value; }
+    }
+
+    public float SlowSpeed
+    {
+        get { if (currentBoatData != null) return currentBoatData.slowSpeed; else return 0; }
+        set { currentBoatData.addSpeed = value; }
+    }
+
+    public float RotateAdd
+    {
+        get { if (currentBoatData != null) return currentBoatData.rotateAdd; else return 0; }
+        set { currentBoatData.addSpeed = value; }
+    }
+
+    public float ReturnShakeSpeed
+    {
+        get { if (currentBoatData != null) return currentBoatData.returnShakeSpeed; else return 0; }
+        set { currentBoatData.addSpeed = value; }
+    }
+
+    public float ShakeAdd
+    {
+        get { if (currentBoatData != null) return currentBoatData.shakeAdd; else return 0; }
+        set { currentBoatData.addSpeed = value; }
+    }
     #endregion
+
+    #endregion
+
+    public bool isRotating = false;
+    public bool isShaking = false;
+    public bool isShakeRight = false;
+    public bool isSameDir = false;
 
     #region BoatMan Logic
     public void GetAcceleration()
     {
-        CurrentSpeed += currentBoatData.addSpeed;
+        CurrentSpeed += AddSpeed;
 
         photonView.RPC("DoMove", RpcTarget.All, CurrentSpeed);
     }
@@ -118,10 +177,73 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
     #endregion
 
     #region Helmsman Logic
-    public void DoRotate()
+
+    ///旋转逻辑：
+    ///如果在档，挡的方向与转的方向  一致  ==》 加速旋转且急速减速 ，船身会向转弯方向急速倾斜 (漂移效果)
+    ///          档的方向与转的方向不一致  ==》 旋转速度微微减慢且有减速 ，船身会向转弯方向微微倾斜 
+    ///          特殊情况：如果没速度(当前设置为5) 档只能有减速效果
+    ///          
+    ///如果没档：船身只会向转弯方向慢慢倾斜（比档的方向与转的方向不一致的时候要多）
+    public void RotateControl(bool isRight)
     {
-        Debug.Log("旋转");
-        transform.Rotate(GameManager.Instance.rotateSpeed * Time.deltaTime, 0, 0);
+        //旋转方向
+        float dir = isRight ? 1 : -1;
+        float shakedir;
+
+        if (isShaking)
+        {
+            isSameDir = false;
+            //档的方向
+            shakedir = isShakeRight ? 1 : -1;
+
+            //挡的方向相同
+            if (dir == shakedir)
+            {
+                isSameDir = true;
+                //向旋转方向加速旋转
+                CurrentRotateSpeed = (RotateSpeed + RotateAdd) * dir;
+
+                //船身向加速方向倾斜加大
+                CurrentShakeSpeed = (ShakeSpeed + ShakeAdd) * dir;
+            }
+            else
+            {
+                //转弯变慢
+                CurrentRotateSpeed = RotateSpeed * dir * 0.75f;
+
+                //船身缓慢倾斜
+                CurrentShakeSpeed = ShakeSpeed * dir * 0.5f;
+            }
+        }
+        else
+        {
+            //船身只会向转弯方向慢慢倾斜
+            CurrentRotateSpeed = RotateSpeed * dir;
+            CurrentShakeSpeed = ShakeSpeed * dir;
+        }
+
+        if (CurrentSpeed >= 5f)
+        {
+            Ship.transform.Rotate(0, CurrentRotateSpeed, 0);
+            Foam.transform.Rotate(0, -CurrentRotateSpeed, 0);
+        }
+
+        ShipBody.transform.Rotate(CurrentShakeSpeed, 0, 0);
+    }
+
+    public void ChangeRotate(bool isRight)
+    {
+        ShakeAdd = isRight ? ShakeAdd : -ShakeAdd;
+        photonView.RPC("NetChangeRotate", RpcTarget.All, isRotating, isShaking, isShakeRight, isRight);
+    }
+
+    [PunRPC]
+    public void NetChangeRotate(bool isRotating, bool isShaking, bool isShakeRight, bool isRight)
+    {
+        this.isRotating = isRotating;
+        this.isShaking = isShaking;
+        this.isShakeRight = isShakeRight;
+        RotateControl(isRight);
     }
     #endregion
 

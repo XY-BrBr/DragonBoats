@@ -18,7 +18,7 @@ public class TurnLeftBtn : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
         if (isPress)
         {
-            GameManager.Instance.ChangeRotate(false);
+            //ameManager.Instance.ChangeRotate(false);
         }
     }
 
@@ -26,15 +26,15 @@ public class TurnLeftBtn : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     public void OnPointerDown(PointerEventData eventData)
     {
         isPress = true;
-        GameManager.Instance.isRotating = true;
+        //GameManager.Instance.isRotating = true;
         animators.AnimaSetBool("DoAnim", true);
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
         isPress = false;
-        GameManager.Instance.isRotating = false;
-        GameManager.Instance.ChangeRotate(false);
+        //GameManager.Instance.isRotating = false;
+        //GameManager.Instance.ChangeRotate(false);
         animators.AnimaSetBool("DoAnim", false);
     }
 }
