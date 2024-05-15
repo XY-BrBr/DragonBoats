@@ -52,6 +52,8 @@ public class GameManager : Singleton<GameManager>, IPunObservable
     [SerializeField] float currentRotateSpeed = 0;
     [SerializeField] float currentShakeSpeed = 0;
     #endregion
+    public DragonBoatData_SO boatData;
+    public DragonBoatMovement boatMovement;
 
     public GameObject Ship;
     public GameObject ShipBody;
@@ -81,6 +83,8 @@ public class GameManager : Singleton<GameManager>, IPunObservable
     public PlayerType playerType;
 
     float ReTime = 7f; //失败界面显示倒计时
+
+    #region Unity Base Method
 
     // Start is called before the first frame update
     void Start()
@@ -143,6 +147,13 @@ public class GameManager : Singleton<GameManager>, IPunObservable
         }
 
         //if (isShaking) { currentSpeed}
+    }
+
+    #endregion
+
+    public DragonBoatData_SO InitDragonBoat()
+    {
+        return boatData;
     }
 
     /// <summary>

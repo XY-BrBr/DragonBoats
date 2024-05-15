@@ -52,7 +52,7 @@ public class UIManager : Singleton<UIManager>
                 HelmsmanParent.gameObject.SetActive(false);
                 DummerParent.gameObject.SetActive(false);
 
-                PowerBarReady.fillAmount = GameManager.Instance.currentSpeed / GameManager.Instance.maxSpeed;
+                PowerBarReady.fillAmount = GameManager.Instance.boatMovement.CurrentSpeed / GameManager.Instance.boatMovement.MaxSpeed;
 
                 shiperView.SetActive(true);
                 helmanView.SetActive(false);

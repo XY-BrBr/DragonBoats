@@ -18,6 +18,18 @@ public class DragonBoatData_SO : ScriptableObject
     [Tooltip("龙船摇晃速度")]
     public float shakeSpeed;
 
+
+    [Header("实时属性")]
+    [Tooltip("实时速度")]
+    public float currentSpeed;
+
+    [Tooltip("实时转弯速度")]
+    public float currentRotateSpeed;
+
+    [Tooltip("实时倾斜速度")]
+    public float currentShakeSpeed;
+
+
     //TODO:可能后续会变成玩家(选手属性)
     [Header("附加属性")]
     [Tooltip("增速加速度")]

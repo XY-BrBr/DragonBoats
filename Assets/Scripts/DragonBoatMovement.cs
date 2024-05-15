@@ -18,6 +18,8 @@ enum Buff
 
 public class DragonBoatMovement : MonoBehaviour, IPunObservable
 {
+    public DragonBoatData_SO currentBoatData;
+
     //组件
     Rigidbody rigid;
     PhotonView photonView;
@@ -30,6 +32,7 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
     //最大速度
     //public float maxSpeed = 20f; 
 
+    #region Unity Base Method
     private void Awake()
     {
         rigid = GetComponent<Rigidbody>();
@@ -39,30 +42,41 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
     // Start is called before the first frame update
     void Start()
     {
+        currentBoatData = Instantiate(GameManager.Instance.InitDragonBoat());
+
         GameManager.Instance.currentSpeed = 0f;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (GameManager.Instance.currentSpeed > 0)
+        if (currentBoatData.currentSpeed > 0)
         {
-            GameManager.Instance.currentSpeed -= GameManager.Instance.resistanceSpeed * Time.deltaTime;
+            currentBoatData.currentSpeed -= GameManager.Instance.resistanceSpeed * Time.deltaTime;
         }
 
-        rigid.velocity = GameManager.Instance.Ship.transform.forward * GameManager.Instance.currentSpeed;
+        rigid.velocity = GameManager.Instance.Ship.transform.forward * currentBoatData.currentSpeed;
     }
 
     private void FixedUpdate()
     {
 
     }
+    #endregion
 
-    [PunRPC]
-    private void DoMove(float currentSpeed)
+    #region Read from Data_SO
+    public float CurrentSpeed
     {
-        GameManager.Instance.currentSpeed = currentSpeed;
+        get { if (currentBoatData != null) return currentBoatData.currentSpeed; else return 0; }
+        set { if (value < currentBoatData.maxSpeed) currentBoatData.currentSpeed = value; 
+            else currentBoatData.currentSpeed = currentBoatData.maxSpeed; }
     }
+
+    public float MaxSpeed
+    {
+        get { if (currentBoatData != null) return currentBoatData.maxSpeed; else return 0; }
+    }
+    #endregion
 
     public void DoRotate()
     {
@@ -72,17 +86,17 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
 
     public void GetAcceleration()
     {
-        if (GameManager.Instance.currentSpeed + GameManager.Instance.addSpeed > GameManager.Instance.maxSpeed)
-        {
-            GameManager.Instance.currentSpeed = GameManager.Instance.maxSpeed;
-        }
-        else
-        {
-            GameManager.Instance.currentSpeed += GameManager.Instance.addSpeed;
-        }
+        CurrentSpeed += currentBoatData.addSpeed;
 
-        photonView.RPC("DoMove", RpcTarget.All, GameManager.Instance.currentSpeed);
+        photonView.RPC("DoMove", RpcTarget.All, CurrentSpeed);
     }
+
+    [PunRPC]
+    private void DoMove(float currentSpeed)
+    {
+        CurrentSpeed = currentSpeed;
+    }
+
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {

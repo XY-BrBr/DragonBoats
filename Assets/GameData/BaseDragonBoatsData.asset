@@ -10,5 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 18974c6887f1d2f4ea42356f1aef88bb, type: 3}
-  m_Name: NewDragonBoatsData
+  m_Name: BaseDragonBoatsData
   m_EditorClassIdentifier: 
+  maxSpeed: 40
+  minSpeed: 5
+  rotateSpeed: 0.2
+  shakeSpeed: 0.1
+  addSpeed: 2
+  slowSpeed: 1
+  rotateAdd: 0.1
+  returnShakeSpeed: 0.2
+  shakeAdd: 0.5
