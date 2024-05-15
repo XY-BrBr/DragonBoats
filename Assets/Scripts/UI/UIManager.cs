@@ -14,7 +14,7 @@ public class UIManager : Singleton<UIManager>
     public Image PowerBarReady;
     public Transform PowerPoint;
 
-    [Header(" 不同角色的视角")]
+    [Header("不同角色的视角")]
     public GameObject shiperView;
     public GameObject helmanView;
     public GameObject drummerView;
@@ -28,18 +28,10 @@ public class UIManager : Singleton<UIManager>
 
     public Canvas LoseParent;
 
-    [Header("相关数据")]
-    public float PowerBarUpSpeed;
-    public float PowerBarLowSpeed;
-    public float PowerBarToPoint;
-
     public Animator animator;
 
     private void Start()
     {
-        PowerBarUpSpeed = GameManager.Instance.addSpeed / GameManager.Instance.maxSpeed;
-        PowerBarLowSpeed = GameManager.Instance.slowSpeed / GameManager.Instance.maxSpeed;
-
         Buff_Text.gameObject.SetActive(false);
     }
 

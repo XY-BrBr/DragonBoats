@@ -24,14 +24,6 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
     Rigidbody rigid;
     PhotonView photonView;
 
-    //用于模拟船向前移动的逻辑
-    //测试版1：通过点击鼠标左键加速
-
-    //当前速度
-
-    //最大速度
-    //public float maxSpeed = 20f; 
-
     #region Unity Base Method
     private void Awake()
     {
@@ -65,25 +57,52 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
     #endregion
 
     #region Read from Data_SO
-    public float CurrentSpeed
-    {
-        get { if (currentBoatData != null) return currentBoatData.currentSpeed; else return 0; }
-        set { if (value < currentBoatData.maxSpeed) currentBoatData.currentSpeed = value; 
-            else currentBoatData.currentSpeed = currentBoatData.maxSpeed; }
-    }
 
+    #region Base Property
     public float MaxSpeed
     {
         get { if (currentBoatData != null) return currentBoatData.maxSpeed; else return 0; }
     }
-    #endregion
 
-    public void DoRotate()
+    public float MinSpeed
     {
-        Debug.Log("旋转");
-        transform.Rotate(GameManager.Instance.rotateSpeed * Time.deltaTime, 0, 0);
+        get { if (currentBoatData != null) return currentBoatData.minSpeed; else return 0; }
     }
 
+    public float RotateSpeed
+    {
+        get { if (currentBoatData != null) return currentBoatData.rotateSpeed; else return 0; }
+    }
+
+    public float ShakeSpeed
+    {
+        get { if (currentBoatData != null) return currentBoatData.shakeSpeed; else return 0; }
+    }
+    #endregion
+
+    #region Active Property
+    public float CurrentSpeed
+    {
+        get { if (currentBoatData != null) return currentBoatData.currentSpeed; else return 0; }
+        set { currentBoatData.currentSpeed = Mathf.Clamp(value, 0, currentBoatData.maxSpeed); }
+    }
+
+    public float CurrentRotateSpeed
+    {
+        get { if (currentBoatData != null) return currentBoatData.currentRotateSpeed; else return 0; }
+        set { currentBoatData.currentRotateSpeed = value; }
+    }
+
+    public float CurrentShakeSpeed
+    {
+        get { if (currentBoatData != null) return currentBoatData.currentShakeSpeed; else return 0; }
+        set { currentBoatData.currentShakeSpeed = value; }
+    }
+    #endregion
+
+    #endregion
+
+    #region BoatMan Logic
     public void GetAcceleration()
     {
         CurrentSpeed += currentBoatData.addSpeed;
@@ -96,7 +115,15 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
     {
         CurrentSpeed = currentSpeed;
     }
+    #endregion
 
+    #region Helmsman Logic
+    public void DoRotate()
+    {
+        Debug.Log("旋转");
+        transform.Rotate(GameManager.Instance.rotateSpeed * Time.deltaTime, 0, 0);
+    }
+    #endregion
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {

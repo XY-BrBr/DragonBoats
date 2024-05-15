@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[SerializeField]
 [CreateAssetMenu(fileName = "NewDragonBoatsData", menuName = "GameData/DragonBoatsData")]
 public class DragonBoatData_SO : ScriptableObject
 {
