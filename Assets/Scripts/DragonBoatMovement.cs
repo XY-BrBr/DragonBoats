@@ -84,8 +84,6 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
         photonView.RPC("DoMove", RpcTarget.All, GameManager.Instance.currentSpeed);
     }
 
-    private Vector3 networkVelocity;
-
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         
