@@ -17,6 +17,9 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
     Rigidbody rigid;
     PhotonView photonView;
 
+    public bool isRotating = false;
+    public bool isShaking = false;
+
     float ReTime = 7f; //失败界面显示倒计时
 
     #region Unity Base Method
@@ -34,15 +37,25 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
         currentBoatData = Instantiate(GameManager.Instance.InitDragonBoat());
 
         CurrentSpeed = 0f;
+
+        CurrentRotateSpeed = 0f;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (currentBoatData.currentSpeed > 0)
+        if (CurrentSpeed > 0)
         {
-            currentBoatData.currentSpeed -= GameManager.Instance.resistanceSpeed * Time.deltaTime;
+            CurrentSpeed -= GameManager.Instance.resistanceSpeed * Time.deltaTime;
         }
+
+        if (CurrentSpeed >= 5f && CurrentRotateSpeed != 0)
+        {
+            Ship.transform.Rotate(0, CurrentRotateSpeed, 0);
+            Foam.transform.Rotate(0, -CurrentRotateSpeed, 0);
+        }
+
+        ShipBody.transform.Rotate(CurrentShakeSpeed, 0, 0);
 
         float angle = ShipBody.transform.EulerAngles2InspectorRotation_Ex().x;
 
@@ -59,6 +72,7 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
         }
 
         rigid.velocity = GameManager.Instance.Ship.transform.forward * currentBoatData.currentSpeed;
+
     }
 
     private void FixedUpdate()
@@ -156,11 +170,6 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
 
     #endregion
 
-    public bool isRotating = false;
-    public bool isShaking = false;
-    public bool isShakeRight = false;
-    public bool isSameDir = false;
-
     #region BoatMan Logic
     public void GetAcceleration()
     {
@@ -184,22 +193,22 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
     ///          特殊情况：如果没速度(当前设置为5) 档只能有减速效果
     ///          
     ///如果没档：船身只会向转弯方向慢慢倾斜（比档的方向与转的方向不一致的时候要多）
-    public void RotateControl(bool isRight)
+    public void RotateControl(bool isTurnRight, bool isSameDir)
     {
         //旋转方向
-        float dir = isRight ? 1 : -1;
-        float shakedir;
+        float dir = isTurnRight ? 1 : -1;
+
+        if (!isRotating)
+        {
+            CurrentRotateSpeed = 0;
+            return;
+        }
 
         if (isShaking)
         {
-            isSameDir = false;
-            //档的方向
-            shakedir = isShakeRight ? 1 : -1;
-
             //挡的方向相同
-            if (dir == shakedir)
+            if (isSameDir)
             {
-                isSameDir = true;
                 //向旋转方向加速旋转
                 CurrentRotateSpeed = (RotateSpeed + RotateAdd) * dir;
 
@@ -221,29 +230,18 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
             CurrentRotateSpeed = RotateSpeed * dir;
             CurrentShakeSpeed = ShakeSpeed * dir;
         }
-
-        if (CurrentSpeed >= 5f)
-        {
-            Ship.transform.Rotate(0, CurrentRotateSpeed, 0);
-            Foam.transform.Rotate(0, -CurrentRotateSpeed, 0);
-        }
-
-        ShipBody.transform.Rotate(CurrentShakeSpeed, 0, 0);
     }
 
     public void ChangeRotate(bool isRight)
     {
         ShakeAdd = isRight ? ShakeAdd : -ShakeAdd;
-        photonView.RPC("NetChangeRotate", RpcTarget.All, isRotating, isShaking, isShakeRight, isRight);
     }
 
     [PunRPC]
     public void NetChangeRotate(bool isRotating, bool isShaking, bool isShakeRight, bool isRight)
     {
-        this.isRotating = isRotating;
-        this.isShaking = isShaking;
-        this.isShakeRight = isShakeRight;
-        RotateControl(isRight);
+
+        //RotateControl(isRight);
     }
     #endregion
 

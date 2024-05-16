@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class DrummerController : MonoBehaviour
 {
@@ -60,4 +61,5 @@ public class DrummerController : MonoBehaviour
         UIManager.Instance.HideBuff();
         yield break;
     }
+
 }
