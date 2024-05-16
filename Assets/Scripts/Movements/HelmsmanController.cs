@@ -31,6 +31,7 @@ public class HelmsmanController : MonoBehaviour
         EventTrigger triggerTL = TurnLeft_Btn.gameObject.GetComponent<EventTrigger>();
         EventTrigger triggerSR = ShakeRight_Btn.gameObject.GetComponent<EventTrigger>();
         EventTrigger triggerSL = ShakeLeft_Btn.gameObject.GetComponent<EventTrigger>();
+
         EventTrigger.Entry entryDown = new EventTrigger.Entry();
         EventTrigger.Entry entryUp = new EventTrigger.Entry();
 
@@ -51,8 +52,6 @@ public class HelmsmanController : MonoBehaviour
         triggerSL.triggers.Add(entryUp);
 
         movement = GetComponent<DragonBoatMovement>();
-
-        TurnRight_Btn.onClick.AddListener(() => {  });
     }
 
     // Update is called once per frame

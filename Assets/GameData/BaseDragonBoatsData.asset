@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxSpeed: 40
   minSpeed: 5
-  rotateSpeed: 0.2
-  shakeSpeed: 0.1
+  rotateSpeed: 10
+  shakeSpeed: 6
   currentSpeed: 0
   currentRotateSpeed: 0
   currentShakeSpeed: 0
   addSpeed: 5
   slowSpeed: 2
-  rotateAdd: 0.1
-  returnShakeSpeed: 0.2
-  shakeAdd: 0.5
+  rotateAdd: 4
+  returnShakeSpeed: 10
+  shakeAdd: 5

@@ -44,18 +44,20 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
     // Update is called once per frame
     void Update()
     {
+        //扒手移动
         if (CurrentSpeed > 0)
         {
             CurrentSpeed -= GameManager.Instance.resistanceSpeed * Time.deltaTime;
         }
 
-        if (CurrentSpeed >= 5f && CurrentRotateSpeed != 0)
+        //舵手旋转
+        if (CurrentSpeed >= 5f && isRotating)
         {
-            Ship.transform.Rotate(0, CurrentRotateSpeed, 0);
-            Foam.transform.Rotate(0, -CurrentRotateSpeed, 0);
+            Ship.transform.Rotate(0, CurrentRotateSpeed * Time.deltaTime, 0);
+            Foam.transform.Rotate(0, -CurrentRotateSpeed * Time.deltaTime, 0);
         }
 
-        ShipBody.transform.Rotate(CurrentShakeSpeed, 0, 0);
+        ShipBody.transform.Rotate(CurrentShakeSpeed * Time.deltaTime, 0, 0);
 
         float angle = ShipBody.transform.EulerAngles2InspectorRotation_Ex().x;
 
@@ -71,8 +73,7 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
             }
         }
 
-        rigid.velocity = GameManager.Instance.Ship.transform.forward * currentBoatData.currentSpeed;
-
+        rigid.velocity = GameManager.Instance.Ship.transform.forward * CurrentSpeed;
     }
 
     private void FixedUpdate()
@@ -81,10 +82,11 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
 
         if (!isRotating)
         {
+            Debug.Log(angle);
             if (angle > 0.1f)
-                ShipBody.transform.Rotate((ShakeSpeed + ShakeAdd + ReturnShakeSpeed) * -1, 0, 0);
+                ShipBody.transform.Rotate(ReturnShakeSpeed * -1 * Time.deltaTime, 0, 0);
             else if (angle < -0.1f)
-                ShipBody.transform.Rotate((ShakeSpeed + ShakeAdd + ReturnShakeSpeed) * 1, 0, 0);
+                ShipBody.transform.Rotate(ReturnShakeSpeed * 1 * Time.deltaTime, 0, 0);
             else
                 return;
         }
@@ -200,6 +202,7 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
 
         if (!isRotating)
         {
+            CurrentShakeSpeed = 0;
             CurrentRotateSpeed = 0;
             return;
         }
@@ -230,17 +233,17 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
             CurrentRotateSpeed = RotateSpeed * dir;
             CurrentShakeSpeed = ShakeSpeed * dir;
         }
-    }
 
-    public void ChangeRotate(bool isRight)
-    {
-        ShakeAdd = isRight ? ShakeAdd : -ShakeAdd;
+        photonView.RPC("NetChangeRotate", RpcTarget.Others);
     }
 
     [PunRPC]
-    public void NetChangeRotate(bool isRotating, bool isShaking, bool isShakeRight, bool isRight)
+    public void NetChangeRotate(bool isRotating, float currentRotateSpeed, float currentSpeed, float currentShakeSpeed)
     {
-
+        this.isRotating = isRotating;
+        CurrentRotateSpeed = currentRotateSpeed;
+        CurrentSpeed = currentSpeed;
+        CurrentShakeSpeed = currentShakeSpeed;
         //RotateControl(isRight);
     }
     #endregion
