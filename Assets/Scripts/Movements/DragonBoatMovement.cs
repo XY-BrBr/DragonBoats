@@ -177,7 +177,7 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
     {
         CurrentSpeed += AddSpeed;
 
-        photonView.RPC("DoMove", RpcTarget.All, CurrentSpeed);
+        photonView.RPC("DoMove", RpcTarget.Others, CurrentSpeed);
     }
 
     [PunRPC]
@@ -204,6 +204,7 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
         {
             CurrentShakeSpeed = 0;
             CurrentRotateSpeed = 0;
+            photonView.RPC("NetChangeRotate", RpcTarget.Others, isRotating, CurrentRotateSpeed, CurrentShakeSpeed);
             return;
         }
 
@@ -234,15 +235,15 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
             CurrentShakeSpeed = ShakeSpeed * dir;
         }
 
-        photonView.RPC("NetChangeRotate", RpcTarget.Others);
+        photonView.RPC("NetChangeRotate", RpcTarget.Others, isRotating, isShaking, CurrentRotateSpeed, CurrentShakeSpeed);
     }
 
     [PunRPC]
-    public void NetChangeRotate(bool isRotating, float currentRotateSpeed, float currentSpeed, float currentShakeSpeed)
+    public void NetChangeRotate(bool isRotating, bool isShaking, float currentRotateSpeed, float currentShakeSpeed)
     {
         this.isRotating = isRotating;
+        this.isShaking = isShaking;
         CurrentRotateSpeed = currentRotateSpeed;
-        CurrentSpeed = currentSpeed;
         CurrentShakeSpeed = currentShakeSpeed;
         //RotateControl(isRight);
     }

@@ -165,6 +165,6 @@ public class GameManager : Singleton<GameManager>, IPunObservable
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        throw new NotImplementedException();
+        //throw new NotImplementedException();
     }
 }
