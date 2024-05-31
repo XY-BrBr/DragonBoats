@@ -19,16 +19,6 @@ public enum PlayerType
     Dummer,
 }
 
-public static class Enum_Ex
-{
-    public static string GetDscription(this Enum val)
-    {
-        var field = val.GetType().GetField(val.ToString());
-        var customAttribute = Attribute.GetCustomAttribute(field!, typeof(DescriptionAttribute));
-        return customAttribute == null ? val.ToString() : ((DescriptionAttribute)customAttribute).Description;
-    }
-}
-
 public class GameManager : Singleton<GameManager>, IPunObservable
 {
     public DragonBoatData_SO boatData;
@@ -48,12 +38,6 @@ public class GameManager : Singleton<GameManager>, IPunObservable
     [Tooltip("扒手控制组件")]
     DrummerController drummerController;
 
-    [Header("鼓手移动控制相关")]
-    public bool canBuff = true;
-    public bool getBuff = false;
-    public int nowBuffPoint;
-    public int[] buffList;
-
     public BuffManager buffManager;
 
     [Header("测试用面板")]
@@ -67,9 +51,6 @@ public class GameManager : Singleton<GameManager>, IPunObservable
     // Start is called before the first frame update
     void Start()
     {
-        nowBuffPoint = 0;
-        buffList = new int[15];
-
         playerType = PlayerType.Boatman;
 
         boatmanController = Ship.GetComponent<BoatManController>();
@@ -144,26 +125,26 @@ public class GameManager : Singleton<GameManager>, IPunObservable
         
     }
 
-    /// <summary>
-    /// 获取Buff效果
-    /// </summary>
-    /// <param name="buffList">鼓点数组</param>
-    /// <param name="nowBuffPoint">数组指针</param>
-    /// <returns></returns>
-    public string CheckBuff(int[] buffList, int nowBuffPoint)
-    {
-        string buffName;
-        if (buffList[1] == 1 && buffList[2] == 1 && buffList[3] == 1 && nowBuffPoint == 4)
-            buffName = "获得加速效果";
-        else if (buffList[1] == 2 && buffList[2] == 2 && nowBuffPoint == 3 && nowBuffPoint == 3)
-            buffName = "获得转弯加速效果";
-        else if (buffList[1] == 2 && buffList[2] == 1 && nowBuffPoint == 3 && nowBuffPoint == 3)
-            buffName = "获得无敌效果";
-        else
-            buffName = "无效";
+    ///// <summary>
+    ///// 获取Buff效果
+    ///// </summary>
+    ///// <param name="buffList">鼓点数组</param>
+    ///// <param name="nowBuffPoint">数组指针</param>
+    ///// <returns></returns>
+    //public string CheckBuff(int[] buffList, int nowBuffPoint)
+    //{
+    //    string buffName;
+    //    if (buffList[1] == 1 && buffList[2] == 1 && buffList[3] == 1 && nowBuffPoint == 4)
+    //        buffName = "获得加速效果";
+    //    else if (buffList[1] == 2 && buffList[2] == 2 && nowBuffPoint == 3 && nowBuffPoint == 3)
+    //        buffName = "获得转弯加速效果";
+    //    else if (buffList[1] == 2 && buffList[2] == 1 && nowBuffPoint == 3 && nowBuffPoint == 3)
+    //        buffName = "获得无敌效果";
+    //    else
+    //        buffName = "无效";
 
-        return buffName;
-    }
+    //    return buffName;
+    //}
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {

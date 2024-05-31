@@ -14,11 +14,19 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
     public GameObject ShipBody;
     public GameObject Foam;
 
+    public BuffManager buffManager;
+
     Rigidbody rigid;
     PhotonView photonView;
 
+    [Header("旋转相关")]
     public bool isRotating = false;
     public bool isShaking = false;
+
+    [Header("鼓手移动控制相关")]
+    public bool canBuff = true;
+    public bool getBuff = false;
+    public int currentBuff;
 
     float ReTime = 7f; //失败界面显示倒计时
 
@@ -246,6 +254,38 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
         CurrentRotateSpeed = currentRotateSpeed;
         CurrentShakeSpeed = currentShakeSpeed;
         //RotateControl(isRight);
+    }
+    #endregion
+
+    #region Drummer Logic
+    public void DrummerTest()
+    {
+        if (canBuff)
+        {
+            StartCoroutine(GetBuffLastTime());
+            canBuff = false;
+        }
+    }
+
+    /// <summary>
+    /// 鼓点刷新计时器
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator GetBuffLastTime()
+    {
+        //击鼓计时
+        yield return new WaitForSeconds(2);
+
+        //击鼓结束，开始计算Buff
+        getBuff = true;
+        buffManager.CheckBuff(currentBuff);
+        yield return new WaitForSeconds(2);
+
+        //Buff计算结束，恢复状态
+        getBuff = false;
+        canBuff = true;
+        UIManager.Instance.HideBuff();
+        yield break;
     }
     #endregion
 

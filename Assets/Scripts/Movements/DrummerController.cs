@@ -26,40 +26,21 @@ public class DrummerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        DummerCenter_Btn.interactable = !GameManager.Instance.getBuff;
-        DummerEdge_Btn.interactable = !GameManager.Instance.getBuff;
+        DummerCenter_Btn.interactable = !movement.getBuff;
+        DummerEdge_Btn.interactable = !movement.getBuff;
     }
 
+    /// <summary>
+    /// ÇÃ»÷¹ÄÊÂ¼þ
+    /// </summary>
+    /// <param name="isMiddle"></param>
     private void PressDurmEvent(bool isMiddle)
     {
         string str = isMiddle ? "DoRight" : "DoLeft";
 
-        if (GameManager.Instance.canBuff && isMiddle)
-        {
-            StartCoroutine(GetBuffLastTime());
-            GameManager.Instance.canBuff = false;
-        }
 
-        if(!GameManager.Instance.canBuff)
-        {
-            UIManager.Instance.ShowBuffList(isMiddle);
-        }
-
+        UIManager.Instance.ShowBuffList(isMiddle);
         anim.SetTrigger(str);
-    }
-
-    IEnumerator GetBuffLastTime()
-    {
-        yield return new WaitForSeconds(2);
-        GameManager.Instance.getBuff = true;
-        UIManager.Instance.ShowBuff();
-        yield return new WaitForSeconds(2);
-        GameManager.Instance.buffList = new int[15];
-        GameManager.Instance.nowBuffPoint = 0;
-        GameManager.Instance.getBuff = false;
-        GameManager.Instance.canBuff = true;
-        UIManager.Instance.HideBuff();
-        yield break;
     }
 
 }

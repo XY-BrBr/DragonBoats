@@ -9,6 +9,7 @@ using Photon.Pun;
 public class UIManager : Singleton<UIManager>
 {
     //UI组件
+    [Header("不同身份的玩家控制面板")]
     public Canvas ShiperParent;
     public Image PowerBarSteady;
     public Image PowerBarReady;
@@ -18,8 +19,11 @@ public class UIManager : Singleton<UIManager>
 
     public Canvas DummerParent;
 
+    [Header("鼓点面板相关")]
     public Text Buff_Text;
     public Canvas GetBuffList;
+    public List<int> buffList;
+    public int nowBuffPoint;
 
     public Canvas LoseParent;
 
@@ -62,23 +66,23 @@ public class UIManager : Singleton<UIManager>
         //TODO: 把动画触发优化一下
         animator.SetTrigger("DoAnim");
 
-        GetBuffList.transform.GetChild(GameManager.Instance.nowBuffPoint).GetComponent<Image>().color = isMiddle ? Color.red : Color.yellow;
-        GetBuffList.transform.GetChild(GameManager.Instance.nowBuffPoint).gameObject.SetActive(true);
-        GameManager.Instance.buffList[GameManager.Instance.nowBuffPoint] = isMiddle ? 1 : 2;
-        GameManager.Instance.nowBuffPoint += 1;
+        GetBuffList.transform.GetChild(nowBuffPoint).GetComponent<Image>().color = isMiddle ? Color.red : Color.yellow;
+        GetBuffList.transform.GetChild(nowBuffPoint).gameObject.SetActive(true);
+        buffList[nowBuffPoint] = isMiddle ? 1 : 2;
+        nowBuffPoint += 1;
     }
 
     /// <summary>
     /// Buff效果UI显示
     /// </summary>
-    public void ShowBuff()
+    public void ShowBuff(string buffName)
     {
-        for (int i = 0; i < GameManager.Instance.buffList.Length; i++)
+        for (int i = 0; i < buffList.Count; i++)
         {
             GetBuffList.transform.GetChild(i).gameObject.SetActive(false);
         }
 
-        Buff_Text.text = GameManager.Instance.CheckBuff(GameManager.Instance.buffList, GameManager.Instance.nowBuffPoint);
+        Buff_Text.text = buffName;
         Buff_Text.gameObject.SetActive(true);
     }
 
