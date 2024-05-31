@@ -54,6 +54,8 @@ public class GameManager : Singleton<GameManager>, IPunObservable
     public int nowBuffPoint;
     public int[] buffList;
 
+    public BuffManager buffManager;
+
     [Header("≤‚ ‘”√√Ê∞Â")]
     public Button SwitchPlayerType_Btn;
     public Text PlayerType_Text;
