@@ -125,26 +125,6 @@ public class GameManager : Singleton<GameManager>, IPunObservable
         
     }
 
-    ///// <summary>
-    ///// 获取Buff效果
-    ///// </summary>
-    ///// <param name="buffList">鼓点数组</param>
-    ///// <param name="nowBuffPoint">数组指针</param>
-    ///// <returns></returns>
-    //public string CheckBuff(int[] buffList, int nowBuffPoint)
-    //{
-    //    string buffName;
-    //    if (buffList[1] == 1 && buffList[2] == 1 && buffList[3] == 1 && nowBuffPoint == 4)
-    //        buffName = "获得加速效果";
-    //    else if (buffList[1] == 2 && buffList[2] == 2 && nowBuffPoint == 3 && nowBuffPoint == 3)
-    //        buffName = "获得转弯加速效果";
-    //    else if (buffList[1] == 2 && buffList[2] == 1 && nowBuffPoint == 3 && nowBuffPoint == 3)
-    //        buffName = "获得无敌效果";
-    //    else
-    //        buffName = "无效";
-
-    //    return buffName;
-    //}
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {

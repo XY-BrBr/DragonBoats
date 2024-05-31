@@ -16,8 +16,6 @@ public class BuffManager : MonoBehaviour
 {
     Dictionary<BuffType, IBuff> buffDic = new Dictionary<BuffType, IBuff>();
 
-    public int currentBuff;
-
     //Â¼ÈëBuff
     public void InitBuff()
     {
@@ -41,7 +39,6 @@ public class BuffManager : MonoBehaviour
         {
             UIManager.Instance.ShowBuff(currentBuff.GetDscription());
             ApplyBuff(buff);
-            currentBuff = 0;
         }
         else
         {

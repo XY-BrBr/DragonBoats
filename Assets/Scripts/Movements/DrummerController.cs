@@ -38,6 +38,7 @@ public class DrummerController : MonoBehaviour
     {
         string str = isMiddle ? "DoRight" : "DoLeft";
 
+        movement.DrummerTest(isMiddle);
 
         UIManager.Instance.ShowBuffList(isMiddle);
         anim.SetTrigger(str);

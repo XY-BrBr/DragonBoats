@@ -258,13 +258,20 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
     #endregion
 
     #region Drummer Logic
-    public void DrummerTest()
+    public void DrummerTest(bool isMiddle)
     {
         if (canBuff)
         {
             StartCoroutine(GetBuffLastTime());
             canBuff = false;
         }
+        else
+        {
+            return;
+        }
+
+        currentBuff = currentBuff << 1;
+        currentBuff += isMiddle ? 0 : 1;
     }
 
     /// <summary>
@@ -274,6 +281,7 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
     IEnumerator GetBuffLastTime()
     {
         //击鼓计时
+        currentBuff = 0;
         yield return new WaitForSeconds(2);
 
         //击鼓结束，开始计算Buff
@@ -284,6 +292,7 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
         //Buff计算结束，恢复状态
         getBuff = false;
         canBuff = true;
+        currentBuff = -1;
         UIManager.Instance.HideBuff();
         yield break;
     }
