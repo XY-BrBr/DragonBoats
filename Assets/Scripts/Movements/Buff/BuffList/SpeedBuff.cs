@@ -1,30 +1,50 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using System.Collections;
 
-public class SpeedBuff : MonoBehaviour, IBuff
+public class SpeedBuff : IBuff
 {
+    public BuffData_SO buffData;
+
     public float originalAddSpeed;
-    public float buffAddSpeed;
-    public float duration;
+    public float buffAddSpeed = 0.1f;
+    public float duration = 5;
     public Coroutine speedBuffCoroutine;
+
+    public SpeedBuff()
+    {
+        InitBuffData();
+    }
+
+    public void InitBuffData()
+    {
+        if(buffData == null)
+        {
+            buffData = Resources.Load<BuffData_SO>("SpeedBuff_Data");
+        }
+
+        buffAddSpeed = buffData.increaseValue;
+        duration = buffData.duration;
+        Debug.Log(buffAddSpeed+ "," +duration);
+    }
 
     public void ApplyBuff()
     {
-        if (speedBuffCoroutine != null) { StopCoroutine(speedBuffCoroutine); }
+        if (speedBuffCoroutine != null) { CoroutineManager.Instance.StopCoroutine(speedBuffCoroutine); }
         originalAddSpeed = GameManager.Instance.Ship.GetComponent<DragonBoatMovement>().AddSpeed;
-        StartCoroutine(SpeedBuffCoroutine(duration));
+        speedBuffCoroutine = CoroutineManager.Instance.StartCoroutine(SpeedBuffCoroutine());
     }
 
-    private IEnumerator SpeedBuffCoroutine(float duration)
+    IEnumerator SpeedBuffCoroutine()
     {
         GameManager.Instance.Ship.GetComponent<DragonBoatMovement>().AddSpeed += buffAddSpeed;
         Debug.Log("加速Buff生效ing......");
 
         yield return new WaitForSeconds(duration);
+
         GameManager.Instance.Ship.GetComponent<DragonBoatMovement>().AddSpeed = originalAddSpeed;
         Debug.Log("加速Buff消失......");
         speedBuffCoroutine = null;
+        yield return null;
     }
 }
 

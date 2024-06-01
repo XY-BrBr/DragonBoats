@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using UnityEngine;
 
-enum BuffType
+public enum BuffType
 {
     [Description("提高加速度")]
     Speed = 0b00000,
@@ -15,6 +15,11 @@ enum BuffType
 public class BuffManager : MonoBehaviour
 {
     Dictionary<BuffType, IBuff> buffDic = new Dictionary<BuffType, IBuff>();
+
+    private void Start()
+    {
+        InitBuff();
+    }
 
     //录入Buff
     public void InitBuff()
@@ -29,8 +34,10 @@ public class BuffManager : MonoBehaviour
     public void CheckBuff(int _currentBuff)
     {
         BuffType currentBuff = (BuffType)_currentBuff;
+        //Debug.Log(currentBuff);
+        Debug.Log(buffDic.ContainsKey(currentBuff));
 
-        if(buffDic == null)
+        if(buffDic == null || buffDic.Count == 0)
         {
             InitBuff();
         }

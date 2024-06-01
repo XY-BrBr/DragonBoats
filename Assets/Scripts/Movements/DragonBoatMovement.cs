@@ -40,9 +40,12 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
     // Start is called before the first frame update
     void Start()
     {
+        currentBuff = 0;
+
         ReTime = 5f;
 
         currentBoatData = Instantiate(GameManager.Instance.InitDragonBoat());
+        buffManager = GetComponent<BuffManager>();
 
         CurrentSpeed = 0f;
 
@@ -79,6 +82,11 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
                 Debug.Log("返回菜单");
                 SceneManager.LoadSceneAsync("Menu");
             }
+        }
+
+        if (getBuff)
+        {
+            buffManager.CheckBuff(currentBuff);
         }
 
         rigid.velocity = GameManager.Instance.Ship.transform.forward * CurrentSpeed;
@@ -281,12 +289,10 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
     IEnumerator GetBuffLastTime()
     {
         //击鼓计时
-        currentBuff = 0;
         yield return new WaitForSeconds(2);
 
         //击鼓结束，开始计算Buff
         getBuff = true;
-        buffManager.CheckBuff(currentBuff);
         yield return new WaitForSeconds(2);
 
         //Buff计算结束，恢复状态

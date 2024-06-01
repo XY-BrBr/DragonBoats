@@ -4,5 +4,7 @@ using UnityEngine;
 
 public interface IBuff
 {
+    public void InitBuffData();
+
     public void ApplyBuff();
 }

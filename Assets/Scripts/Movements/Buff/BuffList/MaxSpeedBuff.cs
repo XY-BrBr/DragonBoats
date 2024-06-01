@@ -8,4 +8,9 @@ public class MaxSpeedBuff : MonoBehaviour, IBuff
     {
         throw new System.NotImplementedException();
     }
+
+    public void InitBuffData()
+    {
+        throw new System.NotImplementedException();
+    }
 }

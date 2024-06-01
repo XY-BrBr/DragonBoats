@@ -31,6 +31,8 @@ public class UIManager : Singleton<UIManager>
 
     private void Start()
     {
+        nowBuffPoint = 0;
+        buffList = new List<int>();
         Buff_Text.gameObject.SetActive(false);
     }
 
@@ -68,7 +70,7 @@ public class UIManager : Singleton<UIManager>
 
         GetBuffList.transform.GetChild(nowBuffPoint).GetComponent<Image>().color = isMiddle ? Color.red : Color.yellow;
         GetBuffList.transform.GetChild(nowBuffPoint).gameObject.SetActive(true);
-        buffList[nowBuffPoint] = isMiddle ? 1 : 2;
+        buffList.Add(isMiddle ? 0 : 1);
         nowBuffPoint += 1;
     }
 
@@ -91,6 +93,9 @@ public class UIManager : Singleton<UIManager>
     /// </summary>
     public void HideBuff()
     {
+        buffList = new List<int>();
+        nowBuffPoint = 0;
+
         Buff_Text.text = "";
         Buff_Text.gameObject.SetActive(false);
     }

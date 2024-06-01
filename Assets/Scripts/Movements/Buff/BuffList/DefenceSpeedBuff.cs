@@ -2,17 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DefenceSpeedBuff : MonoBehaviour
+public class DefenceSpeedBuff : MonoBehaviour , IBuff
 {
-    // Start is called before the first frame update
-    void Start()
+    public void ApplyBuff()
     {
-        
+        throw new System.NotImplementedException();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void InitBuffData()
     {
-        
+        throw new System.NotImplementedException();
     }
 }
