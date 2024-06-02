@@ -40,7 +40,7 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
     // Start is called before the first frame update
     void Start()
     {
-        currentBuff = 0;
+        currentBuff = 1;
 
         ReTime = 5f;
 
@@ -86,6 +86,7 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
 
         if (getBuff)
         {
+            getBuff = false;
             buffManager.CheckBuff(currentBuff);
         }
 
@@ -115,6 +116,7 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
     public float MaxSpeed
     {
         get { if (currentBoatData != null) return currentBoatData.maxSpeed; else return 0; }
+        set { currentBoatData.maxSpeed = value; }
     }
 
     public float MinSpeed
@@ -220,7 +222,7 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
         {
             CurrentShakeSpeed = 0;
             CurrentRotateSpeed = 0;
-            photonView.RPC("NetChangeRotate", RpcTarget.Others, isRotating, CurrentRotateSpeed, CurrentShakeSpeed);
+            photonView.RPC("NetChangeRotate", RpcTarget.Others, isRotating, isShaking, CurrentRotateSpeed, CurrentShakeSpeed);
             return;
         }
 
@@ -273,10 +275,6 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
             StartCoroutine(GetBuffLastTime());
             canBuff = false;
         }
-        else
-        {
-            return;
-        }
 
         currentBuff = currentBuff << 1;
         currentBuff += isMiddle ? 0 : 1;
@@ -293,14 +291,22 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
 
         //»÷¹Ä½áÊø£¬¿ªÊ¼¼ÆËãBuff
         getBuff = true;
+        photonView.RPC("NetSetDrummer", RpcTarget.Others, getBuff, currentBuff);
         yield return new WaitForSeconds(2);
 
         //Buff¼ÆËã½áÊø£¬»Ö¸´×´Ì¬
         getBuff = false;
         canBuff = true;
-        currentBuff = -1;
+        currentBuff = 1;
         UIManager.Instance.HideBuff();
         yield break;
+    }
+
+    [PunRPC]
+    public void NetSetDrummer(bool getBuff,int currentBuff)
+    {
+        this.getBuff = getBuff;
+        this.currentBuff = currentBuff;
     }
     #endregion
 

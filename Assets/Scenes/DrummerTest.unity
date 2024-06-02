@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -511,24 +511,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6af7dc4d72d76f4cb9b212a6028c3ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  boatData: {fileID: 0}
+  boatMovement: {fileID: 0}
+  resistanceSpeed: 0.1
   Ship: {fileID: 0}
-  ShipBody: {fileID: 0}
-  TestParent: {fileID: 0}
+  cam: {fileID: 0}
+  boatmanController: {fileID: 0}
+  buffManager: {fileID: 0}
   SwitchPlayerType_Btn: {fileID: 0}
   PlayerType_Text: {fileID: 0}
-  ShipAcceleration: 50
   playerType: 0
-  addSpeed: 2
-  slowSpeed: 1
-  maxSpeed: 40
-  currentSpeed: 0
-  isRotating: 0
-  rotateSpeed: 2
-  rotateAdd: 2
-  isShaking: 0
-  returnShakeSpeed: 0.2
-  shakeSpeed: 0.1
-  shakeAdd: 0.5
 --- !u!1 &700859000
 GameObject:
   m_ObjectHideFlags: 0
@@ -784,6 +776,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3f9a61825adf8f45b8076bf174293ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentBoatData: {fileID: 0}
+  Ship: {fileID: 0}
+  ShipBody: {fileID: 0}
+  Foam: {fileID: 0}
+  buffManager: {fileID: 0}
+  isRotating: 0
+  isShaking: 0
+  canBuff: 1
+  getBuff: 0
+  currentBuff: 0
 --- !u!54 &716506211
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1941,21 +1943,14 @@ MonoBehaviour:
   PowerBarSteady: {fileID: 919934813}
   PowerBarReady: {fileID: 1500419892}
   PowerPoint: {fileID: 731060398}
-  shiperView: {fileID: 0}
-  otherView: {fileID: 0}
   HelmsmanParent: {fileID: 0}
   DummerParent: {fileID: 0}
-  DummerCenter_Btn: {fileID: 0}
-  DummerEdge_Btn: {fileID: 0}
   Buff_Text: {fileID: 0}
   GetBuffList: {fileID: 0}
-  LoseParent: {fileID: 0}
-  PowerBarUpSpeed: 0.1
-  PowerBarLowSpeed: 0.05
-  PowerBarToPoint: -180
-  canBuff: 1
-  nowBuffPoint: 0
   buffList: 
+  nowBuffPoint: 0
+  LoseParent: {fileID: 0}
+  animator: {fileID: 0}
 --- !u!4 &1695970500
 Transform:
   m_ObjectHideFlags: 0

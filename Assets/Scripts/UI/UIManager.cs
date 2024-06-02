@@ -39,6 +39,7 @@ public class UIManager : Singleton<UIManager>
     private void Update()
     {
         PowerBarReady.fillAmount = GameManager.Instance.boatMovement.CurrentSpeed / GameManager.Instance.boatMovement.MaxSpeed;
+        PowerBarSteady.fillAmount = (GameManager.Instance.boatMovement.MaxSpeed - GameManager.Instance.boatData.maxSpeed) / GameManager.Instance.boatMovement.MaxSpeed;
     }
 
     /// <summary>

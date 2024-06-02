@@ -6,10 +6,13 @@ using UnityEngine;
 public enum BuffType
 {
     [Description("提高加速度")]
-    Speed = 0b00000,
+    Speed = 0b10000,
 
     [Description("提高最高速度")]
-    MaxSpeed = 0b01110,
+    MaxSpeed = 0b11110,
+
+    [Description("提高旋转速度")]
+    RotateSpeed = 0b111111,
 }
 
 public class BuffManager : MonoBehaviour
@@ -28,6 +31,7 @@ public class BuffManager : MonoBehaviour
         //buffDic.Add(new List<byte>() { 1, 1, 1, 1 }, BuffType.Power);
         //buffDic.Add(new List<byte>() { 1, 0, 1, 1 }, BuffType.Defense);
         buffDic.Add(BuffType.MaxSpeed, new MaxSpeedBuff());
+        buffDic.Add(BuffType.RotateSpeed, new RotateAddBuff());
     }
 
     //检查Buff类型
@@ -35,7 +39,7 @@ public class BuffManager : MonoBehaviour
     {
         BuffType currentBuff = (BuffType)_currentBuff;
         //Debug.Log(currentBuff);
-        Debug.Log(buffDic.ContainsKey(currentBuff));
+        //Debug.Log(buffDic.ContainsKey(currentBuff));
 
         if(buffDic == null || buffDic.Count == 0)
         {

@@ -8,7 +8,7 @@ public class SpeedBuff : IBuff
     public float originalAddSpeed;
     public float buffAddSpeed = 0.1f;
     public float duration = 5;
-    public Coroutine speedBuffCoroutine;
+    Coroutine speedBuffCoroutine;
 
     public SpeedBuff()
     {
@@ -38,6 +38,7 @@ public class SpeedBuff : IBuff
     {
         GameManager.Instance.Ship.GetComponent<DragonBoatMovement>().AddSpeed += buffAddSpeed;
         Debug.Log("加速Buff生效ing......");
+        //Debug.Log(GameManager.Instance.Ship.GetComponent<DragonBoatMovement>().AddSpeed);
 
         yield return new WaitForSeconds(duration);
 
