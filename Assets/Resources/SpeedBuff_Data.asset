@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: SpeedBuff_Data
   m_EditorClassIdentifier: 
   buffName: "\u52A0\u901FBuff"
-  buffType: 0
+  buffType: 16
   increaseValue: 0.1
   duration: 5

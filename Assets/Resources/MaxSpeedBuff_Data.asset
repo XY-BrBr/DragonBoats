@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: MaxSpeedBuff_Data
   m_EditorClassIdentifier: 
   buffName: "\u6700\u5927\u901F\u5EA6Buff"
-  buffType: 14
+  buffType: 30
   increaseValue: 5
   duration: 10
