@@ -29,6 +29,8 @@ public class UIManager : Singleton<UIManager>
     public Text LoseText;
     public Button RestartBtn;
 
+    public Text Ping_Text;
+
     public Animator animator;
 
     private void Start()
@@ -48,6 +50,8 @@ public class UIManager : Singleton<UIManager>
     {
         PowerBarReady.fillAmount = GameManager.Instance.boatMovement.CurrentSpeed / GameManager.Instance.boatMovement.MaxSpeed;
         PowerBarSteady.fillAmount = (GameManager.Instance.boatMovement.MaxSpeed - GameManager.Instance.boatData.maxSpeed) / GameManager.Instance.boatMovement.MaxSpeed;
+
+        //Ping_Text.text = "Ping = " +  + "ms";
     }
 
     /// <summary>

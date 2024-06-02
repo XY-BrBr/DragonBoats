@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buffName: "\u52A0\u901FBuff"
   buffType: 16
-  increaseValue: 0.1
+  increaseValue: 3
   duration: 5
