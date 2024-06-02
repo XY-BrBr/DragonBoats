@@ -15,7 +15,7 @@ MonoBehaviour:
   maxSpeed: 40
   minSpeed: 5
   rotateSpeed: 10
-  shakeSpeed: 6
+  shakeSpeed: 5
   currentSpeed: 0
   currentRotateSpeed: 0
   currentShakeSpeed: 0
@@ -23,4 +23,4 @@ MonoBehaviour:
   slowSpeed: 2
   rotateAdd: 4
   returnShakeSpeed: 10
-  shakeAdd: 5
+  shakeAdd: 4

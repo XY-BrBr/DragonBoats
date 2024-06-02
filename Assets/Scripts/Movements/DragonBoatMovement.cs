@@ -22,6 +22,7 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
     [Header("旋转相关")]
     public bool isRotating = false;
     public bool isShaking = false;
+    public bool isSameDir = false;
 
     [Header("鼓手移动控制相关")]
     public bool canBuff = true;
@@ -40,6 +41,7 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
     // Start is called before the first frame update
     void Start()
     {
+        Time.timeScale = 1;
         currentBuff = 1;
 
         ReTime = 5f;
@@ -68,14 +70,14 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
             Foam.transform.Rotate(0, -CurrentRotateSpeed * Time.deltaTime, 0);
         }
 
-        ShipBody.transform.Rotate(CurrentShakeSpeed * Time.deltaTime, 0, 0);
+        if(isRotating) ShipBody.transform.Rotate(CurrentShakeSpeed * Time.deltaTime, 0, 0);
 
         float angle = ShipBody.transform.EulerAngles2InspectorRotation_Ex().x;
 
         if (angle > 39f || angle < -39f)
         {
             Time.timeScale = 0;
-            UIManager.Instance.Lose();
+            UIManager.Instance.Lose("你们翻船辣~");
             ReTime -= Time.fixedUnscaledDeltaTime;
             if (ReTime < 0)
             {
@@ -86,7 +88,6 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
 
         if (getBuff)
         {
-            getBuff = false;
             buffManager.CheckBuff(currentBuff);
         }
 
@@ -217,19 +218,20 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
     {
         //旋转方向
         float dir = isTurnRight ? 1 : -1;
+        this.isSameDir = isSameDir;
 
         if (!isRotating)
         {
             CurrentShakeSpeed = 0;
             CurrentRotateSpeed = 0;
-            photonView.RPC("NetChangeRotate", RpcTarget.Others, isRotating, isShaking, CurrentRotateSpeed, CurrentShakeSpeed);
+            photonView.RPC("NetChangeRotate", RpcTarget.Others, isRotating, isShaking, CurrentRotateSpeed, CurrentShakeSpeed, isSameDir);
             return;
         }
 
         if (isShaking)
         {
             //挡的方向相同
-            if (isSameDir)
+            if (this.isSameDir)
             {
                 //向旋转方向加速旋转
                 CurrentRotateSpeed = (RotateSpeed + RotateAdd) * dir;
@@ -253,16 +255,17 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
             CurrentShakeSpeed = ShakeSpeed * dir;
         }
 
-        photonView.RPC("NetChangeRotate", RpcTarget.Others, isRotating, isShaking, CurrentRotateSpeed, CurrentShakeSpeed);
+        photonView.RPC("NetChangeRotate", RpcTarget.Others, isRotating, isShaking, CurrentRotateSpeed, CurrentShakeSpeed, isSameDir);
     }
 
     [PunRPC]
-    public void NetChangeRotate(bool isRotating, bool isShaking, float currentRotateSpeed, float currentShakeSpeed)
+    public void NetChangeRotate(bool isRotating, bool isShaking, float currentRotateSpeed, float currentShakeSpeed, bool isSameDir)
     {
         this.isRotating = isRotating;
         this.isShaking = isShaking;
         CurrentRotateSpeed = currentRotateSpeed;
         CurrentShakeSpeed = currentShakeSpeed;
+        this.isSameDir = isSameDir;
         //RotateControl(isRight);
     }
     #endregion
@@ -313,5 +316,14 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
+        {
+            Time.timeScale = 0;
+            UIManager.Instance.Lose("你们撞墙啦~");
+        }
     }
 }

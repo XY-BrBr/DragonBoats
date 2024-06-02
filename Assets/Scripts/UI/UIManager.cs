@@ -26,6 +26,8 @@ public class UIManager : Singleton<UIManager>
     public int nowBuffPoint;
 
     public Canvas LoseParent;
+    public Text LoseText;
+    public Button RestartBtn;
 
     public Animator animator;
 
@@ -34,6 +36,12 @@ public class UIManager : Singleton<UIManager>
         nowBuffPoint = 0;
         buffList = new List<int>();
         Buff_Text.gameObject.SetActive(false);
+
+        RestartBtn.onClick.AddListener(() => 
+        {
+            Time.timeScale = 1;
+            SceneManager.LoadScene("ShiperTest");
+        });
     }
 
     private void Update()
@@ -52,9 +60,10 @@ public class UIManager : Singleton<UIManager>
         DummerParent.gameObject.SetActive(GameManager.Instance.playerType == PlayerType.Dummer);
     }
 
-    public void Lose()
+    public void Lose(string str)
     {
         LoseParent.gameObject.SetActive(true);
+        LoseText.text = str;
         //PhotonNetwork.LeaveRoom();
     }
 
