@@ -29,7 +29,7 @@ public class UIManager : Singleton<UIManager>
     public Text LoseText;
     public Button RestartBtn;
 
-    public Text Ping_Text;
+    public Text RoundCount_Text;
 
     public Animator animator;
 

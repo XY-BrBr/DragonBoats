@@ -25,6 +25,8 @@ public class GameManager : Singleton<GameManager>, IPunObservable
     public DragonBoatMovement boatMovement;
 
     public float resistanceSpeed = 0.1f;
+    public int currentRound;
+    public int roundCount = 2;
 
     public GameObject Ship;
     public Camera cam;
@@ -51,6 +53,8 @@ public class GameManager : Singleton<GameManager>, IPunObservable
     // Start is called before the first frame update
     void Start()
     {
+        currentRound = 1;
+        UIManager.Instance.RoundCount_Text.text = $"{currentRound} / {roundCount}";
         playerType = PlayerType.Boatman;
 
         boatmanController = Ship.GetComponent<BoatManController>();
@@ -119,10 +123,10 @@ public class GameManager : Singleton<GameManager>, IPunObservable
         cam.GetComponent<CameraController>().InitCamere();
     }
 
-
-    public void ShakeControl(bool isRight)
+    public void BoatToTheEnd()
     {
-        
+        currentRound += 1;
+        UIManager.Instance.RoundCount_Text.text = $"{currentRound} / {roundCount}";
     }
 
 

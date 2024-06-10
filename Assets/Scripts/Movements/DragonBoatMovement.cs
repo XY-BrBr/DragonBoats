@@ -326,4 +326,12 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
             UIManager.Instance.Lose("ÄãÃÇ×²Ç½À²~");
         }
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.layer == LayerMask.NameToLayer("EndPoint"))
+        {
+            GameManager.Instance.BoatToTheEnd();
+        }
+    }
 }
