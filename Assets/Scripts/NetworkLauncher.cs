@@ -1,27 +1,27 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using Photon.Pun;
-using Photon.Realtime;
+using UnityEngine;
 
 public class NetworkLauncher : MonoBehaviourPunCallbacks
 {
-    public GameObject TeamListPanel;
-    public GameObject StartButtons;
-    public GameObject LoadingPanel;
+    public GameObject MainScreen;
+    public GameObject LoadingScreen;
+
+    private void Start()
+    {
+        ConnectToNetwork();
+    }
 
     public void ConnectToNetwork()
     {
-        StartButtons.SetActive(false);
-        LoadingPanel.SetActive(true);
+        LoadingScreen.SetActive(true);
         PhotonNetwork.ConnectUsingSettings();
     }
 
     public override void OnConnectedToMaster()
     {
         PhotonNetwork.JoinLobby();
-        LoadingPanel.SetActive(false);
-        TeamListPanel.SetActive(true);
+        LoadingScreen.SetActive(false);
+        MainScreen.SetActive(true);
     }
 
     public void Quit()

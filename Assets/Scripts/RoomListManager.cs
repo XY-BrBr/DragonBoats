@@ -34,6 +34,7 @@ public class RoomListManager : MonoBehaviourPunCallbacks
                 }
             }
         }
+
         foreach (var room in roomList)
         {
             GameObject newRoom = Instantiate(RoomMessage_pre, gridLayout.position, Quaternion.identity);
@@ -69,7 +70,7 @@ public class RoomListManager : MonoBehaviourPunCallbacks
         }
 
         PhotonNetwork.NickName = masterName.text;
-        RoomOptions options = new RoomOptions { MaxPlayers = 3 };
+        RoomOptions options = new RoomOptions { MaxPlayers = 4 };
         PhotonNetwork.JoinOrCreateRoom(roomName.text, options, default);
     }
 

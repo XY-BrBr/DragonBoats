@@ -9,6 +9,6 @@ EditorBuildSettings:
     path: Assets/Scenes/Menu.unity
     guid: 914672bff62b55b46b390d91d335684e
   - enabled: 1
-    path: Assets/Scenes/ShiperTest.unity
+    path: Assets/Scenes/TanTou.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   m_configObjects: {}
