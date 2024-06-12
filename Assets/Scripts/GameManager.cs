@@ -24,9 +24,14 @@ public class GameManager : Singleton<GameManager>, IPunObservable
     public DragonBoatData_SO boatData;
     public DragonBoatMovement boatMovement;
 
+    [Header("地图设置")]
+    public List<GameObject> CheckPoint;
     public float resistanceSpeed = 0.1f;
     public int currentRound;
     public int roundCount = 2;
+    public bool endOfRound = false;
+    public float timer;
+    public bool isContinueToClock = true;
 
     public GameObject Ship;
     public Camera cam;
@@ -53,6 +58,7 @@ public class GameManager : Singleton<GameManager>, IPunObservable
     // Start is called before the first frame update
     void Start()
     {
+        isContinueToClock = true;
         currentRound = 1;
         UIManager.Instance.RoundCount_Text.text = $"{currentRound} / {roundCount}";
         playerType = PlayerType.Boatman;
@@ -79,7 +85,7 @@ public class GameManager : Singleton<GameManager>, IPunObservable
 
     private void Update()
     {
-
+        TimeController(isContinueToClock);
     }
 
     // Update is called once per frame
@@ -125,10 +131,37 @@ public class GameManager : Singleton<GameManager>, IPunObservable
 
     public void BoatToTheEnd()
     {
-        currentRound += 1;
-        UIManager.Instance.RoundCount_Text.text = $"{currentRound} / {roundCount}";
+        if (endOfRound)
+        {
+            currentRound += 1;
+            UIManager.Instance.RoundCount_Text.text = $"{currentRound} / {roundCount}";
+        }
+
+        endOfRound = !endOfRound;
+
+        //控制面板
+        
     }
 
+    public void TurnAround()
+    {
+
+    }
+
+    public void TimeController(bool isContinue)
+    {
+        int minute, second, millisecond;
+
+        if (isContinue)
+        {
+            timer += Time.deltaTime;
+        }
+
+        minute = (int)timer / 60;
+        second = (int)timer - minute * 60;
+        millisecond = (int)((timer - (int)timer) * 100);
+        UIManager.Instance.FillTimeText($"{minute:00}:{second:00}:{millisecond:00}");
+    }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {

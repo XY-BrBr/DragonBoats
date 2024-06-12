@@ -19,6 +19,10 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
     Rigidbody rigid;
     PhotonView photonView;
 
+    [Header("扒手相关")]
+    public bool needTurn = false;
+    public bool canTurn = false;
+
     [Header("旋转相关")]
     public bool isRotating = false;
     public bool isShaking = false;
@@ -30,6 +34,8 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
     public int currentBuff;
 
     float ReTime = 7f; //失败界面显示倒计时
+    float second;
+    
 
     #region Unity Base Method
     private void Awake()
@@ -57,7 +63,7 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
     // Update is called once per frame
     void Update()
     {
-        //扒手移动
+        //场景的阻力
         if (CurrentSpeed > 0)
         {
             CurrentSpeed -= GameManager.Instance.resistanceSpeed * Time.deltaTime;
@@ -91,6 +97,13 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
             buffManager.CheckBuff(currentBuff);
         }
 
+        if (needTurn && CurrentSpeed < 2f)
+        {
+            Debug.Log(CurrentSpeed);
+            canTurn = true;
+            needTurn = false;
+        }
+
         rigid.velocity = GameManager.Instance.Ship.transform.forward * CurrentSpeed;
     }
 
@@ -100,7 +113,7 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
 
         if (!isRotating)
         {
-            Debug.Log(angle);
+            //Debug.Log(angle);
             if (angle > 0.1f)
                 ShipBody.transform.Rotate(ReturnShakeSpeed * -1 * Time.deltaTime, 0, 0);
             else if (angle < -0.1f)
@@ -199,10 +212,84 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
         photonView.RPC("DoMove", RpcTarget.Others, CurrentSpeed);
     }
 
+    public void SlowDown()
+    {
+        CurrentSpeed -= SlowSpeed;
+
+        photonView.RPC("DoMove", RpcTarget.Others, CurrentSpeed);
+    }
+
+    public void TurnAround()
+    {
+        canTurn = false;
+        StartCoroutine(GradientBlack());
+
+        photonView.RPC("NetDoTurn", RpcTarget.Others);
+    }
+
+    public IEnumerator GradientBlack()
+    {
+        UIManager.Instance.BlackImage.gameObject.SetActive(true);
+        UIManager.Instance.HideControllerPanel();
+        GameManager.Instance.isContinueToClock = false;
+        float time = 0.7f;
+        second = 0;
+
+        Color color = UIManager.Instance.BlackImage.color;
+        color.a = 0;
+        UIManager.Instance.BlackImage.color = color;
+
+        while (second < time)
+        {
+            second += Time.deltaTime;
+            color.a = Mathf.Clamp01(second / time);
+            UIManager.Instance.BlackImage.color = color;
+            yield return null;
+        }
+
+        color.a = 1f;
+        UIManager.Instance.BlackImage.color = color;
+
+        //转身
+        DoTurn();
+        yield return new WaitForSeconds(0.5f);
+
+        second = 0;
+        while (second < time)
+        {
+            second += Time.deltaTime;
+            color.a = Mathf.Clamp01(1 - (second / time));
+            UIManager.Instance.BlackImage.color = color;
+            yield return null;
+        }
+
+        UIManager.Instance.BlackImage.gameObject.SetActive(false);
+        UIManager.Instance.InitControllerPanel();
+
+        yield return new WaitForSeconds(0.2f);
+        GameManager.Instance.isContinueToClock = true;
+        yield break;
+    }
+
+    /// <summary>
+    /// 船旋转
+    /// </summary>
+    public void DoTurn()
+    {
+        Ship.transform.Rotate(Vector3.up, 180);
+        Foam.transform.Rotate(Vector3.up, 180);
+    }
+
     [PunRPC]
     private void DoMove(float currentSpeed)
     {
         CurrentSpeed = currentSpeed;
+    }
+
+    [PunRPC]
+    private void NetDoTurn()
+    {
+        StartCoroutine(GradientBlack());
     }
     #endregion
 
@@ -332,6 +419,7 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
         if (other.gameObject.layer == LayerMask.NameToLayer("EndPoint"))
         {
             GameManager.Instance.BoatToTheEnd();
+            needTurn = true;
         }
     }
 }

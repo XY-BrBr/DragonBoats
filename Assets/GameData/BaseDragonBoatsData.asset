@@ -20,7 +20,7 @@ MonoBehaviour:
   currentRotateSpeed: 0
   currentShakeSpeed: 0
   addSpeed: 5
-  slowSpeed: 2
+  slowSpeed: 1
   rotateAdd: 4
   returnShakeSpeed: 10
   shakeAdd: 4

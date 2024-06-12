@@ -13,6 +13,8 @@ public class BoatManController : MonoBehaviour
     public Button ShiperTowards_Btn;
     public Button ShiperOrder_Btn;
 
+    public Button TurnAround_Btn;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -22,12 +24,22 @@ public class BoatManController : MonoBehaviour
         {
             MoveTowards();
         });
+
+        ShiperOrder_Btn.onClick.AddListener(() =>
+        {
+            SlowDown();
+        });
+
+        TurnAround_Btn.onClick.AddListener(() => 
+        {
+            movement.TurnAround();
+        });
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        TurnAround_Btn.gameObject.SetActive(movement.canTurn);
     }
 
     private void MoveTowards()
@@ -35,5 +47,12 @@ public class BoatManController : MonoBehaviour
         animators.AnimaSetTrigger("DoAnim");
 
         movement.GetAcceleration();
+    }
+
+    private void SlowDown()
+    {
+        //animators.AnimaSetTrigger("DoAnim");
+
+        movement.SlowDown();
     }
 }

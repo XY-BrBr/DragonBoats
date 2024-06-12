@@ -22,7 +22,7 @@ public class RaceScreen : MonoBehaviour
     {
         ChaJi_Btn.onClick.AddListener(() => { });
         DongSheng_Btn.onClick.AddListener(() => { });
-        TanTou_Btn.onClick.AddListener(() => { SceneManager.LoadSceneAsync("TanTou"); });
+        TanTou_Btn.onClick.AddListener(() => { TanTou(); });
         ShengTang_Btn.onClick.AddListener(() => { });
     }
 
@@ -30,5 +30,17 @@ public class RaceScreen : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void TanTou()
+    {
+        if (isRace)
+        {
+
+        }
+        else
+        {
+            SceneManager.LoadSceneAsync("TanTou");
+        }
     }
 }

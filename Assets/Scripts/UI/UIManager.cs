@@ -25,11 +25,16 @@ public class UIManager : Singleton<UIManager>
     public List<int> buffList;
     public int nowBuffPoint;
 
+    float alpha;
+    float second;
+
+    public Image BlackImage;
     public Canvas LoseParent;
     public Text LoseText;
     public Button RestartBtn;
 
     public Text RoundCount_Text;
+    public Text Time_Text;
 
     public Animator animator;
 
@@ -50,7 +55,7 @@ public class UIManager : Singleton<UIManager>
     {
         PowerBarReady.fillAmount = GameManager.Instance.boatMovement.CurrentSpeed / GameManager.Instance.boatMovement.MaxSpeed;
         PowerBarSteady.fillAmount = (GameManager.Instance.boatMovement.MaxSpeed - GameManager.Instance.boatData.maxSpeed) / GameManager.Instance.boatMovement.MaxSpeed;
-
+        
         //Ping_Text.text = "Ping = " +  + "ms";
     }
 
@@ -62,6 +67,16 @@ public class UIManager : Singleton<UIManager>
         ShiperParent.gameObject.SetActive(GameManager.Instance.playerType == PlayerType.Boatman);
         HelmsmanParent.gameObject.SetActive(GameManager.Instance.playerType == PlayerType.Helmsman);
         DummerParent.gameObject.SetActive(GameManager.Instance.playerType == PlayerType.Dummer);
+    }
+
+    /// <summary>
+    /// Òþ²Ø¿ØÖÆ´°¿ÚÃæ°å
+    /// </summary>
+    public void HideControllerPanel()
+    {
+        ShiperParent.gameObject.SetActive(false);
+        HelmsmanParent.gameObject.SetActive(false);
+        DummerParent.gameObject.SetActive(false);
     }
 
     public void Lose(string str)
@@ -114,5 +129,9 @@ public class UIManager : Singleton<UIManager>
         Buff_Text.gameObject.SetActive(false);
     }
 
+    public void FillTimeText(string str)
+    {
+        Time_Text.text = str;
+    }
     #endregion
 }
