@@ -33,7 +33,7 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
     public bool getBuff = false;
     public int currentBuff;
 
-    float ReTime = 7f; //失败界面显示倒计时
+    float ReTime; //失败界面显示倒计时
     float second;
     
 
@@ -253,6 +253,7 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
         //转身
         DoTurn();
         yield return new WaitForSeconds(0.5f);
+        GameManager.Instance.BoatToTheEnd();
 
         second = 0;
         while (second < time)
@@ -418,7 +419,13 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("EndPoint"))
         {
-            GameManager.Instance.BoatToTheEnd();
+            if(GameManager.Instance.currentRound + 1 > GameManager.Instance.roundCount
+                && GameManager.Instance.CheckPoint[GameManager.Instance.CheckPoint.Count - 1].activeSelf)
+            {
+                //结束
+                Debug.Log("结束");
+            }
+
             needTurn = true;
         }
     }

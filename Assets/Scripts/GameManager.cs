@@ -27,9 +27,11 @@ public class GameManager : Singleton<GameManager>, IPunObservable
     [Header("地图设置")]
     public List<GameObject> CheckPoint;
     public float resistanceSpeed = 0.1f;
-    public int currentRound;
     public int roundCount = 2;
-    public bool endOfRound = false;
+
+    public int timesOfCheck;
+    public int currentRound;
+
     public float timer;
     public bool isContinueToClock = true;
 
@@ -60,6 +62,8 @@ public class GameManager : Singleton<GameManager>, IPunObservable
     {
         isContinueToClock = true;
         currentRound = 1;
+        timesOfCheck = 0;
+
         UIManager.Instance.RoundCount_Text.text = $"{currentRound} / {roundCount}";
         playerType = PlayerType.Boatman;
 
@@ -131,21 +135,18 @@ public class GameManager : Singleton<GameManager>, IPunObservable
 
     public void BoatToTheEnd()
     {
-        if (endOfRound)
+        CheckPoint[timesOfCheck].SetActive(false);
+        timesOfCheck += 1;
+
+        if (timesOfCheck == CheckPoint.Count)
         {
+            timesOfCheck = 0;
             currentRound += 1;
             UIManager.Instance.RoundCount_Text.text = $"{currentRound} / {roundCount}";
         }
 
-        endOfRound = !endOfRound;
-
-        //控制面板
+        CheckPoint[timesOfCheck].SetActive(true);
         
-    }
-
-    public void TurnAround()
-    {
-
     }
 
     public void TimeController(bool isContinue)
