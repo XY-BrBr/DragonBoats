@@ -7,28 +7,38 @@ using Photon.Realtime;
 
 public class RoomListManager : MonoBehaviourPunCallbacks
 {
-    public GameObject NoRoom_Text;
     public GameObject RoomMessage_pre;
     public Transform gridLayout;
+    public RaceScreen raceScreen;
 
     public GameObject CreateRoomPanel;
+    public GameObject CreateRoomMessagePanel;
     public InputField masterName;
     public InputField roomName;
 
+    public string sceneName;
+
+    private void Start()
+    {
+        
+    }
+
     private void Update()
     {
-        NoRoom_Text.SetActive(gridLayout.childCount <= 0);
+        
     }
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
-        for (int i = 0; i < gridLayout.childCount; i++) 
+        Debug.Log("房间变化");
+
+        for (int i = 0; i < gridLayout.childCount; i++)
         {
-            if(gridLayout.GetChild(i).transform.Find("RoomName_Text").GetComponent<Text>().text == roomList[i].Name)
+            if (gridLayout.GetChild(i).transform.Find("RoomName_Text").GetComponent<Text>().text == roomList[i].Name)
             {
                 Destroy(gridLayout.GetChild(i).gameObject);
 
-                if(roomList[i].PlayerCount == 0)
+                if (roomList[i].PlayerCount == 0)
                 {
                     roomList.Remove(roomList[i]);
                 }
@@ -41,7 +51,7 @@ public class RoomListManager : MonoBehaviourPunCallbacks
 
             newRoom.transform.Find("RoomName_Text").GetComponent<Text>().text = room.Name;
 
-            newRoom.transform.Find("JoinRoom_Btn").GetComponent<Button>().onClick.AddListener(() => 
+            newRoom.transform.Find("JoinRoom_Btn").GetComponent<Button>().onClick.AddListener(() =>
             {
                 PhotonNetwork.JoinRoom(room.Name);
             });
@@ -57,30 +67,32 @@ public class RoomListManager : MonoBehaviourPunCallbacks
 
     public void DoCreate()
     {
-        if (masterName.text.Length <= 2)
-        {
-            Debug.Log("Error");
-            return;
-        }
-
         if (roomName.text.Length <= 2)
         {
             Debug.Log("Error");
             return;
         }
 
-        PhotonNetwork.NickName = masterName.text;
-        RoomOptions options = new RoomOptions { MaxPlayers = 4 };
-        PhotonNetwork.JoinOrCreateRoom(roomName.text, options, default);
+        raceScreen.isRace = true;
+        raceScreen.roomName = roomName.text;
+
+        CreateRoomMessagePanel.SetActive(false);
+        MenuUI.Instance.SwitchScene("TeamListPanel", "RaceScreen");
     }
 
     public void DoBack()
     {
-        CreateRoomPanel.SetActive(false);
+        MenuUI.Instance.SwitchScene("TeamListPanel", "MainScreen");
     }
 
     public override void OnJoinedRoom()
     {
-        PhotonNetwork.LoadLevel(1);
+        string sceneName = (string)PhotonNetwork.CurrentRoom.CustomProperties["scene"];
+
+        CreateRoomPanel.SetActive(false);
+        CreateRoomMessagePanel.SetActive(false);
+
+        MenuUI.Instance.SetGameObjectActiveF();
+        PhotonNetwork.LoadLevel(sceneName);
     }
 }

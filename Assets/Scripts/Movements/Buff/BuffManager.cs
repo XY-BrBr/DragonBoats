@@ -5,13 +5,13 @@ using UnityEngine;
 
 public enum BuffType
 {
-    [Description("提高加速度")]
+    [Description("直行鼓")]
     Speed = 0b10000,
 
-    [Description("提高最高速度")]
+    [Description("抓龙鼓")]
     MaxSpeed = 0b11110,
 
-    [Description("提高旋转速度")]
+    [Description("转弯鼓")]
     RotateSpeed = 0b111111,
 }
 

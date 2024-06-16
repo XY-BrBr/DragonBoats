@@ -21,12 +21,14 @@ public enum PlayerType
 
 public class GameManager : Singleton<GameManager>, IPunObservable
 {
+    public RewardData_SO rewardData;
     public DragonBoatData_SO boatData;
     public DragonBoatMovement boatMovement;
 
     [Header("地图设置")]
+    public Transform CheckPoint_Go;
     public List<GameObject> CheckPoint;
-    public float resistanceSpeed = 0.1f;
+    public float resistanceSpeed = 2f;
     public int roundCount = 2;
 
     public int timesOfCheck;
@@ -35,6 +37,8 @@ public class GameManager : Singleton<GameManager>, IPunObservable
     public float timer;
     public bool isContinueToClock = true;
 
+    public PhotonView photonView;
+    public BuffManager buffManager;
     public GameObject Ship;
     public Camera cam;
 
@@ -47,7 +51,6 @@ public class GameManager : Singleton<GameManager>, IPunObservable
     [Tooltip("扒手控制组件")]
     DrummerController drummerController;
 
-    public BuffManager buffManager;
 
     [Header("测试用面板")]
     public Button SwitchPlayerType_Btn;
@@ -60,10 +63,16 @@ public class GameManager : Singleton<GameManager>, IPunObservable
     // Start is called before the first frame update
     void Start()
     {
+        if (!PhotonNetwork.IsMasterClient)
+        {
+
+        }
+
         isContinueToClock = true;
         currentRound = 1;
         timesOfCheck = 0;
 
+        rewardData = Resources.Load<RewardData_SO>("MyRewardData");
         UIManager.Instance.RoundCount_Text.text = $"{currentRound} / {roundCount}";
         playerType = PlayerType.Boatman;
 
@@ -74,6 +83,7 @@ public class GameManager : Singleton<GameManager>, IPunObservable
         cam = Camera.main;
 
         InitRole();
+        InitEnvironment();
 
         SwitchPlayerType_Btn.onClick.AddListener(() =>
         {
@@ -82,7 +92,7 @@ public class GameManager : Singleton<GameManager>, IPunObservable
             else
                 playerType = playerType + 1;
 
-            PlayerType_Text.text = $"当前为 {playerType.GetDscription()} 模式";
+            PlayerType_Text.text = $"{playerType.GetDscription()}模式";
             InitRole();
         });
     }
@@ -90,6 +100,8 @@ public class GameManager : Singleton<GameManager>, IPunObservable
     private void Update()
     {
         TimeController(isContinueToClock);
+
+        //photonView.RPC("SetTime", RpcTarget.Others, timer);
     }
 
     // Update is called once per frame
@@ -133,6 +145,16 @@ public class GameManager : Singleton<GameManager>, IPunObservable
         cam.GetComponent<CameraController>().InitCamere();
     }
 
+    public void InitEnvironment()
+    {
+        CheckPoint_Go = GameObject.Find("CheckPoint_Go").transform;
+
+        for (int i = 0; i < CheckPoint_Go.childCount; i++)
+        {
+            CheckPoint.Add(CheckPoint_Go.GetChild(i).gameObject);
+        }
+    }
+
     public void BoatToTheEnd()
     {
         CheckPoint[timesOfCheck].SetActive(false);
@@ -167,5 +189,16 @@ public class GameManager : Singleton<GameManager>, IPunObservable
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         //throw new NotImplementedException();
+    }
+
+    [PunRPC]
+    private void SetTime(float newtimer)
+    {
+        timer = newtimer;
+    }
+
+    private void RequestTime()
+    {
+
     }
 }

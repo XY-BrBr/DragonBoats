@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0925b464211de054790cda504d3e7bb9, type: 3}
   m_Name: MaxSpeedBuff_Data
   m_EditorClassIdentifier: 
-  buffName: "\u6700\u5927\u901F\u5EA6Buff"
+  buffName: "\u6293\u9F99\u9F13"
   buffType: 30
   increaseValue: 5
   duration: 10

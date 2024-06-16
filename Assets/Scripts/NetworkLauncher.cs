@@ -3,16 +3,19 @@ using UnityEngine;
 
 public class NetworkLauncher : MonoBehaviourPunCallbacks
 {
+    public GameObject StartScreen;
     public GameObject MainScreen;
     public GameObject LoadingScreen;
 
     private void Start()
     {
-        ConnectToNetwork();
+        //ConnectToNetwork();
+        //GameObject.Find("DontDestoryOnLoad");
     }
 
     public void ConnectToNetwork()
     {
+        StartScreen.SetActive(false);
         LoadingScreen.SetActive(true);
         PhotonNetwork.ConnectUsingSettings();
     }

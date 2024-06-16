@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0925b464211de054790cda504d3e7bb9, type: 3}
   m_Name: RotateAddBuff_Data
   m_EditorClassIdentifier: 
-  buffName: "\u65CB\u8F6CBuff"
+  buffName: "\u8F6C\u5F2F\u9F13"
   buffType: 63
   increaseValue: 2
   duration: 4

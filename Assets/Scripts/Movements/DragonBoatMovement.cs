@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class DragonBoatMovement : MonoBehaviour, IPunObservable
 {
@@ -33,7 +34,6 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
     public bool getBuff = false;
     public int currentBuff;
 
-    float ReTime; //失败界面显示倒计时
     float second;
     
 
@@ -49,8 +49,6 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
     {
         Time.timeScale = 1;
         currentBuff = 1;
-
-        ReTime = 5f;
 
         currentBoatData = Instantiate(GameManager.Instance.InitDragonBoat());
         buffManager = GetComponent<BuffManager>();
@@ -83,17 +81,12 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
         if (angle > 39f || angle < -39f)
         {
             Time.timeScale = 0;
-            UIManager.Instance.Lose("你们翻船辣~");
-            ReTime -= Time.fixedUnscaledDeltaTime;
-            if (ReTime < 0)
-            {
-                Debug.Log("返回菜单");
-                SceneManager.LoadSceneAsync("Menu");
-            }
+            UIManager.Instance.Lose(0);
         }
 
         if (getBuff)
         {
+            getBuff = false;
             buffManager.CheckBuff(currentBuff);
         }
 
@@ -411,7 +404,7 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
         if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
         {
             Time.timeScale = 0;
-            UIManager.Instance.Lose("你们撞墙啦~");
+            UIManager.Instance.Lose(1);
         }
     }
 
@@ -419,14 +412,45 @@ public class DragonBoatMovement : MonoBehaviour, IPunObservable
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("EndPoint"))
         {
+            if (Managers.Instance.isStory)
+            {
+                StartCoroutine(ShowEndGame());
+                return;
+            }
+
             if(GameManager.Instance.currentRound + 1 > GameManager.Instance.roundCount
                 && GameManager.Instance.CheckPoint[GameManager.Instance.CheckPoint.Count - 1].activeSelf)
             {
                 //结束
-                Debug.Log("结束");
+                StartCoroutine(ShowEndGame());
             }
 
             needTurn = true;
         }
+    }
+
+    public IEnumerator ShowEndGame()
+    {
+        UIManager.Instance.EndScreen.gameObject.SetActive(true);
+
+        float time = 0.7f;
+        float second = 0;
+
+        Color color = UIManager.Instance.EndScreen.gameObject.GetComponent<Image>().color;
+        color.a = 0;
+        UIManager.Instance.EndScreen.gameObject.GetComponent<Image>().color = color;
+
+        while (second < time)
+        {
+            second += Time.deltaTime;
+            color.a = Mathf.Clamp01(second / time - 0.2f);
+            UIManager.Instance.EndScreen.gameObject.GetComponent<Image>().color = color;
+            yield return null;
+        }
+
+        UIManager.Instance.EndScreen.transform.GetChild(0).gameObject.SetActive(true);
+        UIManager.Instance.EndScreen.interactable = true;
+
+        yield return null;
     }
 }

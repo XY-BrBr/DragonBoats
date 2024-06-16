@@ -30,11 +30,16 @@ public class UIManager : Singleton<UIManager>
 
     public Image BlackImage;
     public Canvas LoseParent;
-    public Text LoseText;
     public Button RestartBtn;
+
+    public Button EndScreen;
+    public GameObject RewardScreen;
 
     public Text RoundCount_Text;
     public Text Time_Text;
+
+    public Text FirstTime_Text;
+    public Text Gold_Text;
 
     public Animator animator;
 
@@ -46,8 +51,26 @@ public class UIManager : Singleton<UIManager>
 
         RestartBtn.onClick.AddListener(() => 
         {
-            Time.timeScale = 1;
-            SceneManager.LoadScene("ShiperTest");
+            MenuUI.Instance.SetGameObjectActive();
+            SceneManager.LoadScene("Menu");
+        });
+
+        EndScreen.onClick.AddListener(() =>
+        {
+            if(Managers.Instance.isStory == true)
+            {
+                SceneManager.LoadScene("Story");
+                Managers.Instance.isEnd = true;
+                return;
+            }
+
+            string str1;
+            int minute = (int)GameManager.Instance.timer / 60;
+            int second = (int)GameManager.Instance.timer - minute * 60;
+            int millisecond = (int)((GameManager.Instance.timer - (int)GameManager.Instance.timer) * 100);
+
+            str1 = $"{minute:00}:{second:00}:{millisecond:00}";
+            ShowRewardScreen(str1);
         });
     }
 
@@ -79,10 +102,14 @@ public class UIManager : Singleton<UIManager>
         DummerParent.gameObject.SetActive(false);
     }
 
-    public void Lose(string str)
+    public void Lose(int type)
     {
         LoseParent.gameObject.SetActive(true);
-        LoseText.text = str;
+        for(int i = 0; i < 1; i++)
+        {
+            LoseParent.transform.GetChild(i).gameObject.SetActive(false);
+        }
+        LoseParent.transform.GetChild(type).gameObject.SetActive(true);
         //PhotonNetwork.LeaveRoom();
     }
 
@@ -128,10 +155,18 @@ public class UIManager : Singleton<UIManager>
         Buff_Text.text = "";
         Buff_Text.gameObject.SetActive(false);
     }
+    #endregion
 
     public void FillTimeText(string str)
     {
         Time_Text.text = str;
     }
-    #endregion
+
+    public void ShowRewardScreen(string str1)
+    {
+        RewardScreen.SetActive(true);
+        GameManager.Instance.rewardData.GoldCount += 1;
+        FirstTime_Text.text = str1;
+        Gold_Text.text = "" + GameManager.Instance.rewardData.GoldCount;
+    }
 }
